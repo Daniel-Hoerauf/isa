@@ -3,7 +3,7 @@
     external_links:
       -  mysql:db
     volumes:
-      - <project_root_dir>:/app
+      - .:/app
     ports:
       - "8001:8000"
-    command: bash -c "mod_wsgi-express start-server --working-directory <project_root_dir> --reload-on-changes <path_to_wsgi.py>/wsgi.py"
+    command: bash -c "mod_wsgi-express start-server --working-directory /app --reload-on-changes app/myProject/myProject/wsgi.py"
