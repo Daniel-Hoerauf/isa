@@ -12,6 +12,11 @@ class Student(models.Model):
     name = models.CharField(max_length=100)
     year = models.IntegerField()
 
+    @classmethod
+    def create(cls, name, year):
+        student = cls(name=name, year=year)
+        return student
+
 class Group(models.Model):
     name = models.CharField(max_length=100)
     size = models.IntegerField()

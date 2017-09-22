@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'home.apps.HomeConfig',
+    'home',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -76,11 +76,19 @@ WSGI_APPLICATION = 'myProject.wsgi.application'
 
 DATABASES = {
     'default': {
+<<<<<<< HEAD
           'ENGINE': 'django.db.backends.mysql',
           'NAME': 'cs4501',
           'USER': 'www',
           'PASSWORD': '$3cureUS',
           'HOST': 'db',
+=======
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'cs4501',
+        'USER': 'www',
+        'PASSWORD': '$3cureUS',
+        'HOST': 'db',
+>>>>>>> 5af00010a6ba39b9885cab62981e7d089fd4ef7d
     }
 }
 
