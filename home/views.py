@@ -1,7 +1,9 @@
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponse, get_object_or_404
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
-from .models import Location, Student
+from .models import Location, Student, Group
 
 
 def index(request):
@@ -9,10 +11,10 @@ def index(request):
 
 def location_index(self):
     model = Location
-    resp = {'status': 'empty', 'locations': []}
+    resp = {'status': 'ok', 'locations': []}
     for loc in Location.objects.all():
         resp['locations'].append({
-            'building_name':loc.building_name,
+            'building_name': loc.building_name,
             'building_address': loc.building_address,
             'college_name': loc.college_name,
             })
@@ -22,7 +24,7 @@ def add_location(request):
     return HttpResponse("Add Location")
 
 def get_location(request, location):
-    return HttpResponse("Get Location #{{".format(location))
+    return HttpResponse("Get Location #{}".format(location))
 
 def delete_location(request, location):
     return HttpResponse("Delete Location #{}".format(location))
@@ -31,8 +33,6 @@ def update_location(request, location):
     return HttpResponse("Delete Location #{}".format(location))
 
 
-
-#########################Student Views #####################################
 def student_index(request):
     resp = {'status': 'ok', 'students': []}
     for stud in Student.objects.all():
@@ -45,19 +45,57 @@ def student_index(request):
         })
     return JsonResponse(resp)
 
+@require_POST
+@csrf_exempt
 def create_student(request):
-    return HttpResponse("Create Student")
+    name = request.POST.get('name')
+    year = request.POST.get('year')
+    if None in [name, year]:
+        return JsonResponse({'status': 'bad request'})
+    stud = Student.create(name, year)
+    stud.save()
+    return JsonResponse({'status': 'ok'})
+
 
 def get_student(request, student):
-    return HttpResponse("Get Student #{}".format(student))
+    stud = get_object_or_404(Student, pk=student)
+    resp = {'status': 'ok', 'student': {
+        'name': stud.name,
+        'year': stud.year,
+        'groups': [{'id': gr.pk,
+                    'name': gr.name}
+                   for gr in stud.group_set.all()],
+    }}
+    return JsonResponse(resp)
 
+
+@require_POST
+@csrf_exempt
 def delete_student(request, student):
-    return HttpResponse("Delete Student #{}".format(student))
+    stud = get_object_or_404(Student, pk=student)
+    stud.delete()
+    return JsonResponse({'status': 'ok'})
 
+@require_POST
+@csrf_exempt
 def update_student(request, student):
-    return HttpResponse("Update Student #{}".format(student))
+    stud = get_object_or_404(Student, pk=student)
+    name = request.POST.get('name')
+    year = request.POST.get('year')
+    if name is None and year is None:
+        return JsonResponse({'status': 'bad request'})
+    updates = []
+    if name:
+        updates.append('name')
+    if year:
+        updates.append('year')
+    stud.name = name
+    stud.year = year
+    stud.save(update_fields=updates)
+    return JsonResponse({'status': 'ok'})
 
-#########################Group Views #####################################
+
+
 def group_index(request):
     resp = {'status': 'empty', 'groups': []}
     for grp in Group.objects.all():
@@ -76,5 +114,5 @@ def get_group(request, group):
 def delete_group(request, group):
     return HttpResponse("Delete Group #{}".format(group))
 
-def update_group(request, student):
+def update_group(request, group):
     return HttpResponse("Update Group #{}".format(group))
