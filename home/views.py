@@ -46,15 +46,41 @@ def add_location(request):
         data['message'] = "ERROR: Item must be a post request"
         return JsonResponse(data)
 
+@csrf_exempt
 def get_location(request, location):
-    return HttpResponse("Get Location #{}".format(location))
+    loc = get_object_or_404(Location, pk=location)
+    resp = {'status': 'empty', 'location': {
+        'building name': location.building_name,
+        'building address': location.building_address,
+    }}
+    return JsonResponse(resp)
 
+
+@require_POST
+@csrf_exempt
 def delete_location(request, location):
-    return HttpResponse("Delete Location #{}".format(location))
+    loc = get_object_or_404(Location, pk=location)
+    loc.delete()
+    return JsonResponse({'status': 'okd'})
 
+
+@require_POST
+@csrf_exempt
 def update_location(request, location):
-    if request == request.POST:
-        return HttpResponse("Delete Location #{}".format(location))
+    loc = get_object_or_404(Location, pk=location)
+    name = request.POST.get('building name')
+    address = request.POST.get('building address')
+    if name is None and address is None:
+        return JsonResponse({'status': 'bad request'})
+    updates = []
+    if name:
+        updates.append('building name')
+    if address:
+        updates.append('building address')
+    loc.building_name = name
+    loc.building_address = address
+    loc.save(update_fields=updates)
+    return JsonResponse({'status': 'ok'})
 
 
 def student_index(request):
@@ -68,6 +94,7 @@ def student_index(request):
                        for gr in stud.group_set.all()],
         })
     return JsonResponse(resp)
+
 
 @require_POST
 @csrf_exempt
@@ -129,14 +156,48 @@ def group_index(request):
         })
     return JsonResponse(resp)
 
+
+@require_POST
+@csrf_exempt
 def create_group(request):
-    return HttpResponse("Create Group")
+    name = request.POST.get('name')
+    size = request.POST.get('size')
+    if None in [name, size]:
+        return JsonResponse({'status': 'bad request'})
+    group = Group.create(name, size)
+    group.save()
+    return JsonResponse({'status': 'ok'})
+
 
 def get_group(request, group):
-    return HttpResponse("Get Group #{}".format(group))
+    group = get_object_or_404(Group, pk=group)
+    resp = {'status': 'ok', 'group': {
+        'name': group.name,
+        'size': group.size,
+    }}
+    return JsonResponse(resp)
 
+
+@require_POST
+@csrf_exempt
 def delete_group(request, group):
-    return HttpResponse("Delete Group #{}".format(group))
+    group = get_object_or_404(Group, pk=group)
+    group.delete()
+    return JsonResponse({'status': 'ok'})
+
 
 def update_group(request, group):
-    return HttpResponse("Update Group #{}".format(group))
+    group = get_object_or_404(Group, pk=group)
+    name = request.POST.get('name')
+    size = request.POST.get('size')
+    if name is None and size is None:
+        return JsonResponse({'status': 'bad request'})
+    updates = []
+    if name:
+        updates.append('name')
+    if size:
+        updates.append('size')
+    group.name = name
+    group.size = size
+    group.save(update_fields=updates)
+    return JsonResponse({'status': 'ok'})
