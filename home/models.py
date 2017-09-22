@@ -9,10 +9,11 @@ class Location(models.Model):
     College_name = models.CharField(max_length=50)
 
 class Student(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=100)
     year = models.IntegerField()
 
 class Group(models.Model):
+    name = models.CharField(max_length=100)
     size = models.IntegerField()
     loc = models.ForeignKey('Location',
                             on_delete=models.CASCADE)
