@@ -1,0 +1,99 @@
+[
+{
+    "model": "home.location",
+    "pk": 1,
+    "fields": {
+        "building_name": "Rice",
+        "building_address": "100 Rice Hall",
+        "college_name": "UVA"
+    }
+},
+{
+    "model": "home.location",
+    "pk": 2,
+    "fields": {
+        "building_name": "Olson",
+        "building_address": "100 Olson Hall",
+        "college_name": "UVA"
+    }
+},
+{
+    "model": "home.location",
+    "pk": 3,
+    "fields": {
+        "building_name": "Old Cabel",
+        "building_address": "100 Old Cabel Hall",
+        "college_name": "UVA"
+    }
+},
+{
+    "model": "home.student",
+    "pk": 1,
+    "fields": {
+        "name": "Daniel A Hoerauf",
+        "year": 4
+    }
+},
+{
+    "model": "home.student",
+    "pk": 3,
+    "fields": {
+        "name": "David Hastings",
+        "year": 4
+    }
+},
+{
+    "model": "home.student",
+    "pk": 4,
+    "fields": {
+        "name": "Joe Dirt",
+        "year": 2
+    }
+},
+{
+    "model": "home.student",
+    "pk": 2,
+    "fields": {
+        "name": "Brigham Bangerter",
+        "year": 3
+    }
+},
+{
+    "model": "home.group",
+    "pk": 1,
+    "fields": {
+        "name": "Study Group",
+        "size": 1,
+        "loc": 1,
+        "students": [
+            1
+        ]
+    }
+},
+{
+    "model": "home.group",
+    "pk": 2,
+    "fields": {
+        "name": "Study Group",
+        "size": 10,
+        "loc": 2,
+        "students": [
+            2,
+            4
+        ]
+    }
+},
+{
+    "model": "home.group",
+    "pk": 3,
+    "fields": {
+        "name": "Study Group",
+        "size": 10,
+        "loc": 2,
+        "students": [
+            2,
+            3
+        ]
+    }
+}
+]
