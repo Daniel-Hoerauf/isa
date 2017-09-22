@@ -25,4 +25,14 @@ urlpatterns = [
         name='delete_student'),
     url(r'^student/(?P<student>[0-9]+)/update/$', views.update_student,
         name='update_student'),
+    
+    
+    url(r'^group/all/$', views.group_index, name='group_index'),
+    url(r'^group/new/$', views.create_group, name='create_group'),
+    url(r'^group/(?P<group>[0-9]+)/$', views.get_group,
+        name='get_group'),
+    url(r'^group/(?P<group>[0-9]+)/delete/$', views.delete_group,
+        name='delete_group'),
+    url(r'^group/(?P<group>[0-9]+)/update/$', views.update_group,
+        name='update_group'),
 ]

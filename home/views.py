@@ -29,6 +29,9 @@ def delete_location(request, location):
 def update_location(request, location):
     return HttpResponse("Delete Location #{}".format(location))
 
+
+
+#########################Student Views #####################################
 def student_index(request):
     resp = {'status': 'ok', 'students': []}
     for stud in Student.objects.all():
@@ -52,3 +55,26 @@ def delete_student(request, student):
 
 def update_student(request, student):
     return HttpResponse("Update Student #{}".format(student))
+
+
+#########################Group Views #####################################
+def group_index(request):
+    resp = {'status': 'empty', 'groups': []}
+    for grp in Group.objects.all():
+        resp['groups'].append({
+            'name': grp.name,
+            'size': grp.size,
+        })
+    return JsonResponse(resp)
+
+def create_group(request):
+    return HttpResponse("Create Group")
+
+def get_group(request, group):
+    return HttpResponse("Get Group #{}".format(group))
+
+def delete_group(request, group):
+    return HttpResponse("Delete Group #{}".format(group))
+
+def update_group(request, student):
+    return HttpResponse("Update Group #{}".format(group))
