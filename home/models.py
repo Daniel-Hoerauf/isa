@@ -6,7 +6,7 @@ from django.db import models
 class Location(models.Model):
     building_name = models.CharField(max_length=50)
     building_address = models.CharField(max_length=50)
-    College_name = models.CharField(max_length=50)
+    college_name = models.CharField(max_length=50)
 
 class Student(models.Model):
     name = models.CharField()
