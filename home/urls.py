@@ -34,4 +34,14 @@ urlpatterns = [
         name='delete_group'),
     url(r'^group/(?P<group>[0-9]+)/update/$', views.update_group,
         name='update_group'),
+
+    url(r'group/(?P<group>[0-9]+)/remove/(?P<student>[0-9]+)/',
+        views.remove_from_group, name='remove_from_group'),
+    url(r'group/(?P<group>[0-9]+)/add/(?P<student>[0-9]+)/',
+        views.add_to_group, name='add_to_group'),
+
+    url(r'group/(?P<group>[0-9]+)/tag/(?P<location>[0-9]+)/',
+        views.tag_group, name='tag_group'),
+    url(r'group/(?P<group>[0-9]+)/untag/',
+        views.untag_group, name='untag_group'),
 ]
