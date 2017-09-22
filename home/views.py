@@ -1,6 +1,7 @@
 from django.shortcuts import HttpResponse
 from django.http import JsonResponse
 from .models import Location, Student
+from django.views.decorators.csrf import csrf_exempt
 
 
 def index(request):
@@ -17,8 +18,29 @@ def location_index(self):
             })
     return JsonResponse(resp)
 
+@csrf_exempt
 def add_location(request):
-    return HttpResponse("Add Location")
+    if request.method == "POST":
+        location = Location()
+        location.building_name = request.POST.get("building name", "")
+        location.college_name = request.POST.get("college name", "")
+        location.building_address = request.POST.get("building address", "")
+        location.save()
+        loc_dict = {
+            "building name": location.building_name,
+            "college name": location.college_name,
+            "building address": location.building_address,
+            }
+        data = {}
+        data['ok'] = True
+        data['message'] = "Success"
+        data['result'] = loc_dict
+        return JsonResponse(data)
+    else:
+        data = {}
+        data['ok'] = False
+        data['message'] = "ERROR: Item must be a post request"
+        return JsonResponse(data)
 
 def get_location(request, location):
     return HttpResponse("Get Location #{{".format(location))
@@ -27,7 +49,8 @@ def delete_location(request, location):
     return HttpResponse("Delete Location #{}".format(location))
 
 def update_location(request, location):
-    return HttpResponse("Delete Location #{}".format(location))
+    if request == request.POST:
+        return HttpResponse("Delete Location #{}".format(location))
 
 
 
