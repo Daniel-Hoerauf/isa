@@ -207,7 +207,11 @@ def update_group(request, group):
 @csrf_exempt
 def remove_from_group(request, group, student):
     stud = get_object_or_404(Student, pk=student)
+    if stud is None:
+        return JsonResponse({'status': 'ERROR: Student not found'})
     group = get_object_or_404(Group, pk=group)
+    if group is None:
+        return JsonResponse({'status':'ERROR: Group not found'})
     if stud in group.student:
         group.students.remove(stud)
     return JsonResponse({'status': 'ok'})
@@ -216,7 +220,11 @@ def remove_from_group(request, group, student):
 @csrf_exempt
 def add_to_group(request, group, student):
     stud = get_object_or_404(Student, pk=student)
+    if stud is None:
+        return JsonResponse({'status': 'ERROR: Student not found'})
     group = get_object_or_404(Group, pk=group)
+    if group is None:
+        return JsonResponse({'status':'ERROR: Group not found'})
     group.students.add(stud)
     return JsonResponse({'status': 'ok'})
 
