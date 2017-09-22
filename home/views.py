@@ -1,14 +1,11 @@
 from django.shortcuts import HttpResponse, get_object_or_404
 from django.http import JsonResponse
-<<<<<<< HEAD
 from .models import Location, Student
-from django.views.decorators.csrf import csrf_exempt
-=======
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from .models import Location, Student, Group
->>>>>>> 5af00010a6ba39b9885cab62981e7d089fd4ef7d
+
 
 
 def index(request):
