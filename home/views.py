@@ -186,6 +186,8 @@ def delete_group(request, group):
     return JsonResponse({'status': 'ok'})
 
 
+@require_POST
+@csrf_exempt
 def update_group(request, group):
     group = get_object_or_404(Group, pk=group)
     name = request.POST.get('name')

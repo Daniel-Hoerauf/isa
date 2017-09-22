@@ -6,4 +6,9 @@
       - .:/app
     ports:
       - "8001:8000"
-    command: bash -c "mod_wsgi-express start-server --working-directory /app --reload-on-changes myProject/wsgi.py"
+    command: |
+      bash -c '
+      python manage.py makemigrations;
+      python manage.py migrate;
+      mod_wsgi-express start-server --working-directory /app --reload-on-changes myProject/wsgi.py
+      '
