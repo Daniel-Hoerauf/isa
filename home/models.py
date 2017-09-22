@@ -21,5 +21,6 @@ class Group(models.Model):
     name = models.CharField(max_length=100)
     size = models.IntegerField()
     loc = models.ForeignKey('Location',
-                            on_delete=models.CASCADE)
+                            on_delete=models.CASCADE,
+                            null=True)
     students = models.ManyToManyField(Student)

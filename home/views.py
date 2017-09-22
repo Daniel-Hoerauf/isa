@@ -116,3 +116,38 @@ def delete_group(request, group):
 
 def update_group(request, group):
     return HttpResponse("Update Group #{}".format(group))
+
+
+@require_POST
+@csrf_exempt
+def remove_from_group(request, group, student):
+    stud = get_object_or_404(Student, pk=student)
+    group = get_object_or_404(Group, pk=group)
+    if stud in group.student:
+        group.students.remove(stud)
+    return JsonResponse({'status': 'ok'})
+
+@require_POST
+@csrf_exempt
+def add_to_group(request, group, student):
+    stud = get_object_or_404(Student, pk=student)
+    group = get_object_or_404(Group, pk=group)
+    group.students.add(stud)
+    return JsonResponse({'status': 'ok'})
+
+@require_POST
+@csrf_exempt
+def tag_group(request, group, location):
+    loc = get_object_or_404(Location, pk=location)
+    group = get_object_or_404(Group, pk=group)
+    group.loc = loc
+    group.save(update_fields=['loc'])
+    return JsonResponse({'status': 'ok'})
+
+@require_POST
+@csrf_exempt
+def untag_group(request, group):
+    group = get_object_or_404(Group, pk=group)
+    group.loc = None
+    group.save(update_fields=['loc'])
+    return JsonResponse({'status': 'ok'})
