@@ -26,14 +26,14 @@ def location_index(self):
 def add_location(request):
     if request.method == "POST":
         location = Location()
-        location.building_name = request.POST.get("building name", "")
-        location.college_name = request.POST.get("college name", "")
-        location.building_address = request.POST.get("building address", "")
+        location.building_name = request.POST.get("building_name", "")
+        location.college_name = request.POST.get("college_name", "")
+        location.building_address = request.POST.get("building_address", "")
         location.save()
         loc_dict = {
-            "building name": location.building_name,
-            "college name": location.college_name,
-            "building address": location.building_address,
+            "building_name": location.building_name,
+            "college_name": location.college_name,
+            "building_address": location.building_address,
             }
         data = {}
         data['ok'] = True
@@ -50,8 +50,8 @@ def add_location(request):
 def get_location(request, location):
     loc = get_object_or_404(Location, pk=location)
     resp = {'status': 'empty', 'location': {
-        'building name': location.building_name,
-        'building address': location.building_address,
+        'building_name': loc.building_name,
+        'building_address': loc.building_address,
     }}
     return JsonResponse(resp)
 
@@ -68,15 +68,15 @@ def delete_location(request, location):
 @csrf_exempt
 def update_location(request, location):
     loc = get_object_or_404(Location, pk=location)
-    name = request.POST.get('building name')
-    address = request.POST.get('building address')
+    name = request.POST.get('building_name')
+    address = request.POST.get('building_address')
     if name is None and address is None:
-        return JsonResponse({'status': 'bad request'})
+        return JsonResponse({'status': 'bad_request'})
     updates = []
     if name:
-        updates.append('building name')
+        updates.append('building_name')
     if address:
-        updates.append('building address')
+        updates.append('building_address')
     loc.building_name = name
     loc.building_address = address
     loc.save(update_fields=updates)
@@ -202,7 +202,7 @@ def update_group(request, group):
     group.name = name
     group.size = size
     group.save(update_fields=updates)
-    return HttpResponse("Update Group #{}".format(group))
+    return JsonResponse({'status': 'ok'})
 
 
 @require_POST
