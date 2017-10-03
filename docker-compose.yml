@@ -3,14 +3,14 @@
     external_links:
       -  mysql:db
     volumes:
-      - .:/app
+      - ./app:/app
     ports:
       - "8001:8000"
     command: |
       bash -c '
-      python manage.py makemigrations;
+      cd /app/;
+      python manage.py makemigrations models;
       python manage.py migrate;
       python manage.py loaddata initial;
-      python manage.py loaddata db.json;
-      mod_wsgi-express start-server --working-directory /app --reload-on-changes myProject/wsgi.py
+      mod_wsgi-express start-server --working-directory /app --reload-on-changes models/wsgi.py
       '

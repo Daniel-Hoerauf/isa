@@ -1,6 +1,6 @@
 [
 {
-    "model": "home.location",
+    "model": "models.location",
     "pk": 1,
     "fields": {
         "building_name": "Rice",
@@ -9,7 +9,7 @@
     }
 },
 {
-    "model": "home.location",
+    "model": "models.location",
     "pk": 2,
     "fields": {
         "building_name": "Olson",
@@ -18,7 +18,7 @@
     }
 },
 {
-    "model": "home.location",
+    "model": "models.location",
     "pk": 3,
     "fields": {
         "building_name": "Old Cabel",
@@ -27,7 +27,7 @@
     }
 },
 {
-    "model": "home.student",
+    "model": "models.student",
     "pk": 1,
     "fields": {
         "name": "Daniel A Hoerauf",
@@ -35,7 +35,7 @@
     }
 },
 {
-    "model": "home.student",
+    "model": "models.student",
     "pk": 3,
     "fields": {
         "name": "David Hastings",
@@ -43,7 +43,7 @@
     }
 },
 {
-    "model": "home.student",
+    "model": "models.student",
     "pk": 4,
     "fields": {
         "name": "Joe Dirt",
@@ -51,7 +51,7 @@
     }
 },
 {
-    "model": "home.student",
+    "model": "models.student",
     "pk": 2,
     "fields": {
         "name": "Brigham Bangerter",
@@ -59,7 +59,7 @@
     }
 },
 {
-    "model": "home.group",
+    "model": "models.group",
     "pk": 1,
     "fields": {
         "name": "Study Group",
@@ -71,7 +71,7 @@
     }
 },
 {
-    "model": "home.group",
+    "model": "models.group",
     "pk": 2,
     "fields": {
         "name": "Study Group",
@@ -84,7 +84,7 @@
     }
 },
 {
-    "model": "home.group",
+    "model": "models.group",
     "pk": 3,
     "fields": {
         "name": "Study Group",
