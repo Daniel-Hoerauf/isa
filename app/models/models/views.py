@@ -22,7 +22,6 @@ def location_index(self):
             })
     return JsonResponse(resp)
 
-@csrf_exempt
 def add_location(request):
     if request.method == "POST":
         location = Location()
@@ -46,7 +45,6 @@ def add_location(request):
         data['message'] = "ERROR: Item must be a post request"
         return JsonResponse(data)
 
-@csrf_exempt
 def get_location(request, location):
     loc = get_object_or_404(Location, pk=location)
     resp = {'status': 'empty', 'location': {
@@ -57,7 +55,6 @@ def get_location(request, location):
 
 
 @require_POST
-@csrf_exempt
 def delete_location(request, location):
     loc = get_object_or_404(Location, pk=location)
     loc.delete()
@@ -65,7 +62,6 @@ def delete_location(request, location):
 
 
 @require_POST
-@csrf_exempt
 def update_location(request, location):
     loc = get_object_or_404(Location, pk=location)
     name = request.POST.get('building_name')
@@ -97,7 +93,6 @@ def student_index(request):
 
 
 @require_POST
-@csrf_exempt
 def create_student(request):
     name = request.POST.get('name')
     year = request.POST.get('year')
@@ -121,14 +116,12 @@ def get_student(request, student):
 
 
 @require_POST
-@csrf_exempt
 def delete_student(request, student):
     stud = get_object_or_404(Student, pk=student)
     stud.delete()
     return JsonResponse({'status': 'ok'})
 
 @require_POST
-@csrf_exempt
 def update_student(request, student):
     stud = get_object_or_404(Student, pk=student)
     name = request.POST.get('name')
@@ -158,7 +151,6 @@ def group_index(request):
 
 
 @require_POST
-@csrf_exempt
 def create_group(request):
     name = request.POST.get('name')
     size = request.POST.get('size')
@@ -179,7 +171,6 @@ def get_group(request, group):
 
 
 @require_POST
-@csrf_exempt
 def delete_group(request, group):
     group = get_object_or_404(Group, pk=group)
     group.delete()
@@ -187,7 +178,6 @@ def delete_group(request, group):
 
 
 @require_POST
-@csrf_exempt
 def update_group(request, group):
     group = get_object_or_404(Group, pk=group)
     name = request.POST.get('name')
