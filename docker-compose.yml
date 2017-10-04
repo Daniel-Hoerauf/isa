@@ -25,8 +25,8 @@ exp:
       - ./app:/app
    command: |
       bash -c '
-      cd /app/web;
-      mod_wsgi-express start-server --working-directory /app/web --reload-on-changes web/wsgi.py
+      cd /app/exp;
+      mod_wsgi-express start-server --working-directory /app/exp --reload-on-changes exp/wsgi.py
       '
 
 web:
@@ -39,6 +39,6 @@ web:
       - ./app:/app
    command: |
       bash -c '
-      cd /app/exp;
-      mod_wsgi-express start-server --working-directory /app/exp --reload-on-changes exp/wsgi.py
+      cd /app/web;
+      mod_wsgi-express start-server --working-directory /app/web --reload-on-changes web/wsgi.py
       '

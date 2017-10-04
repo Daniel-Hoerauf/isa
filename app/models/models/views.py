@@ -9,7 +9,7 @@ from .models import Location, Student, Group
 
 
 def index(request):
-    return HttpResponse("<h1>Hello, world.</h1>")
+    return HttpResponse("<h1>Hello, models.</h1>")
 
 def location_index(self):
     model = Location
