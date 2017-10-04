@@ -1,16 +1,44 @@
- models:
-    image: tp33/django
-    external_links:
-      -  mysql:db
-    volumes:
-      - ./app:/app
-    ports:
+models:
+   image: tp33/django
+   external_links:
+      - mysql:db
+   ports:
       - "8001:8000"
-    command: |
+   volumes:
+      - ./app:/app
+   command: |
       bash -c '
       cd /app/models;
       python manage.py makemigrations models;
       python manage.py migrate;
       python manage.py loaddata initial;
-      mod_wsgi-express start-server --working-directory /app --reload-on-changes models/wsgi.py
+      mod_wsgi-express start-server --working-directory /app/models --reload-on-changes models/wsgi.py
+      '
+
+exp:
+   image: tp33/django
+   links:
+      - models:models-api
+   ports:
+      - "8002:8000"
+   volumes:
+      - ./app:/app
+   command: |
+      bash -c '
+      cd /app/web;
+      mod_wsgi-express start-server --working-directory /app/web --reload-on-changes web/wsgi.py
+      '
+
+web:
+   image: tp33/django
+   links:
+      - exp:exp-api
+   ports:
+      - "8000:8000"
+   volumes:
+      - ./app:/app
+   command: |
+      bash -c '
+      cd /app/exp;
+      mod_wsgi-express start-server --working-directory /app/exp --reload-on-changes exp/wsgi.py
       '
