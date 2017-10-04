@@ -1,0 +1,16 @@
+test_models:
+   image: tp33/django
+   external_links:
+      - mysql:db
+   ports:
+      - "8101:8000"
+   volumes:
+      - ./app:/app
+   command: |
+      bash -c '
+      cd /app/models;
+      python manage.py makemigrations models;
+      python manage.py migrate;
+      python manage.py loaddata initial;
+      python manage.py test
+      '
