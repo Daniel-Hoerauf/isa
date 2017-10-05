@@ -141,7 +141,7 @@ def update_student(request, student):
 
 
 def group_index(request):
-    resp = {'status': 'empty', 'groups': []}
+    resp = {'status': 'ok', 'groups': []}
     for grp in Group.objects.all():
         resp['groups'].append({
             'name': grp.name,
