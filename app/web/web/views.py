@@ -2,23 +2,18 @@ from django.shortcuts import HttpResponse
 from django.views import generic
 from django.views.generic import View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from .forms import GroupForm
+
+import urllib.request
+import urllib.parse
+import json
 
 
 def hello(request):
     return HttpResponse('Hello main page\n')
 
 def group(request):
-    return HttpResponse('Hello group page\n')
-    
-    
-    
-class GroupView(View):
-    form_class = GroupForm
-    template_name = 'group.html'
-    
-    
-    #blank form
-    def get(self, request):
-        form = self.form_class(None)
-        return render(request, self.template_name, {'form': form})
+     req = urllib.request.Request('http://placeholder.com/v1/api/posts/1')
+     resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+     resp = json.loads(resp_json)
+     print(resp)
+     return HttpResponse('Hello group page\n')
