@@ -1,6 +1,5 @@
 from django.shortcuts import HttpResponse, get_object_or_404
 from django.http import JsonResponse
-from .models import Location, Student
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
@@ -83,6 +82,7 @@ def student_index(request):
     resp = {'status': 'ok', 'students': []}
     for stud in Student.objects.all():
         resp['students'].append({
+            'id': stud.pk,
             'name': stud.name,
             'year': stud.year,
             'groups': [{'id': gr.pk,
@@ -203,7 +203,7 @@ def remove_from_group(request, group, student):
         return JsonResponse({'status': 'ERROR: Student not found'})
     group = get_object_or_404(Group, pk=group)
     if group is None:
-        return JsonResponse({'status':'ERROR: Group not found'})
+        return JsonResponse({'status': 'ERROR: Group not found'})
     if stud in group.student:
         group.students.remove(stud)
     return JsonResponse({'status': 'ok'})
@@ -216,7 +216,7 @@ def add_to_group(request, group, student):
         return JsonResponse({'status': 'ERROR: Student not found'})
     group = get_object_or_404(Group, pk=group)
     if group is None:
-        return JsonResponse({'status':'ERROR: Group not found'})
+        return JsonResponse({'status': 'ERROR: Group not found'})
     group.students.add(stud)
     return JsonResponse({'status': 'ok'})
 
