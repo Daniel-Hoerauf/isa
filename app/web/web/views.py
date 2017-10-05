@@ -27,9 +27,3 @@ def groupDetail(request):
      return JsonResponse(resp)
      return HttpResponse('Hello group page\n')
  
-#def groupDetail(request):
- #   req = urllib.request.Request('http://exp-api:8000/group/') 
-#    resp_json = urllib.request.urlopen(req).read().decode('utf-8')
- #   resp = json.loads(resp_json)
-  #  return render(request, 'web/group_detail.html', {'group': group})
- 
