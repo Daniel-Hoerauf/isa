@@ -2,6 +2,9 @@ from django.shortcuts import HttpResponse
 from django.shortcuts import render
 from django.template import loader
 from django.views import generic
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
+from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
@@ -11,11 +14,27 @@ import json
 
 
 def hello(request):
+<<<<<<< HEAD
     return render(request, 'mainPage/mainPage.html')
+=======
+    #template_name = 'templates/mainPage/mainPage.html'
+    req = urllib.request.Request('http://exp-api:8000/group/all')
+    resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+    resp = json.loads(resp_json)
+    return JsonResponse(resp)
+    #return render(request, 'app/mainPage.html')
+    return HttpResponse('Hello main page\n')
+>>>>>>> cf3714e72edf2a47df1df9648aeb0704cc309230
 
-def group(request):
-     req = urllib.request.Request('http://placeholder.com/v1/api/posts/1')
+def groupDetail(request):
+     req = urllib.request.Request('http://exp-api:8000/group/1')
      resp_json = urllib.request.urlopen(req).read().decode('utf-8')
      resp = json.loads(resp_json)
+<<<<<<< HEAD
      print(resp)
      return HttpResponse('Hello group page\n')
+=======
+     return JsonResponse(resp)
+     return HttpResponse('Hello group page\n')
+ 
+>>>>>>> cf3714e72edf2a47df1df9648aeb0704cc309230

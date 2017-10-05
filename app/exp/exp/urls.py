@@ -20,6 +20,8 @@ from . import views
 urlpatterns = [
     url(r'^$', views.hello),
     url(r'^admin/', admin.site.urls),
-    url(r'^group/', views.group, name="group"),
+    #url(r'^group/', views.group, name="group"),
+    url(r'^group/all/$', views.group_index, name='group_index'),
+    url(r'^group/(?P<group>[0-9]+)/$', views.get_group,name='get_group'),
 ]
 
