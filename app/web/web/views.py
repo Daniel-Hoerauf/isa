@@ -14,9 +14,7 @@ import json
 
 
 def hello(request):
-<<<<<<< HEAD
     return render(request, 'mainPage/mainPage.html')
-=======
     #template_name = 'templates/mainPage/mainPage.html'
     req = urllib.request.Request('http://exp-api:8000/group/all')
     resp_json = urllib.request.urlopen(req).read().decode('utf-8')
@@ -24,17 +22,12 @@ def hello(request):
     return JsonResponse(resp)
     #return render(request, 'app/mainPage.html')
     return HttpResponse('Hello main page\n')
->>>>>>> cf3714e72edf2a47df1df9648aeb0704cc309230
 
 def groupDetail(request):
      req = urllib.request.Request('http://exp-api:8000/group/1')
      resp_json = urllib.request.urlopen(req).read().decode('utf-8')
      resp = json.loads(resp_json)
-<<<<<<< HEAD
      print(resp)
      return HttpResponse('Hello group page\n')
-=======
      return JsonResponse(resp)
      return HttpResponse('Hello group page\n')
- 
->>>>>>> cf3714e72edf2a47df1df9648aeb0704cc309230
