@@ -1,0 +1,19 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'web/style.css' %}" />
+<a href="{% url 'login' %}">Login</a>
+<a href="{% url 'logout' %}">Logout</a>
+
+
+
+
+{% if latest_group_list %}
+    <ul>
+    {% for group in latest_group_list %}
+        <li><a href="{% url 'group:detail' group.id %}">{{ group.group_text }}</a></li>
+         
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No groups are available.</p>
+{% endif %}
