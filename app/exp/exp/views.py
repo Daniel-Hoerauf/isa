@@ -8,8 +8,8 @@ def group(request):
 
 class CreateView(generics.ListCreateAPIView):
     """This class defines the create behavior of our rest api."""
-    queryset = Bucketlist.objects.all()
-    serializer_class = BucketlistSerializer
+    queryset = Grouplist.objects.all()
+    serializer_class = GrouplistSerializer
 
     def perform_create(self, serializer):
         """Save the post data when creating a new bucketlist."""
