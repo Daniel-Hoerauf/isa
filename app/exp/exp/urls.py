@@ -20,4 +20,5 @@ from . import views
 urlpatterns = [
     url(r'^$', views.hello),
     url(r'^admin/', admin.site.urls),
+    url(r'^api/group',views.group),
 ]
