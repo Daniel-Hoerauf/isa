@@ -1,4 +1,6 @@
 from django.shortcuts import HttpResponse, get_object_or_404
+from django.shortcuts import render
+from django.template import loader
 from django.http import JsonResponse
 from .models import Location, Student
 from django.views.decorators.csrf import csrf_exempt
@@ -9,7 +11,8 @@ from .models import Location, Student, Group
 
 
 def index(request):
-    return HttpResponse("<h1>Hello, models.</h1>")
+    return render(request, 'models.html')
+    #return HttpResponse("<h1>Hello, models.</h1>")
 
 def location_index(self):
     model = Location
