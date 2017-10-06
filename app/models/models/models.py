@@ -25,7 +25,7 @@ class Group(models.Model):
                             on_delete=models.CASCADE,
                             null=True)
     @classmethod
-    def create(cls, name, size):
+    def create(cls, name, size, description):
         group = cls(name=name, size=size, description=description)
         return group
     students = models.ManyToManyField(Student)

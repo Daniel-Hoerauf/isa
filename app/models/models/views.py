@@ -41,7 +41,7 @@ def add_location(request):
         data['ok'] = True
         data['message'] = "Success"
         data['result'] = loc_dict
-        return JsonResponse(data)
+        return JsonResponse({'status': 'ok'})
     else:
         data = {}
         data['ok'] = False

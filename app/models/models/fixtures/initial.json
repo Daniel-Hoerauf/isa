@@ -74,7 +74,8 @@
     "model": "models.group",
     "pk": 2,
     "fields": {
-        "name": "Study Group",
+        "name": "Group Projects",
+        "description":"come to hang out and laugh while working!",
         "size": 10,
         "loc": 2,
         "students": [
@@ -87,8 +88,79 @@
     "model": "models.group",
     "pk": 3,
     "fields": {
-        "name": "Study Group",
+        "name": "zumba",
+        "description": "yep",
+        "size": 20,
+        "loc": 2,
+        "students": [
+            2,
+            3
+        ]
+    }
+},
+{
+    "model": "models.group",
+    "pk": 3,
+    "fields": {
+        "name": "time-telling",
+        "description": "sign up for easy A",
         "size": 10,
+        "loc": 2,
+        "students": [
+            2,
+            3
+        ]
+    }
+},
+{
+    "model": "models.group",
+    "pk": 3,
+    "fields": {
+        "name": "Mobile dev",
+        "description": "learning about ios dev",
+        "size": 8,
+        "loc": 2,
+        "students": [
+            2,
+            3
+        ]
+    }
+},
+{
+    "model": "models.group",
+    "pk": 3,
+    "fields": {
+        "name": "History",
+        "description": "learning easy stuff",
+        "size": 34,
+        "loc": 2,
+        "students": [
+            2,
+            3
+        ]
+    }
+},
+{
+    "model": "models.group",
+    "pk": 3,
+    "fields": {
+        "name": "CS2150",
+        "description": "reviewing everything",
+        "size": 4,
+        "loc": 2,
+        "students": [
+            2,
+            3
+        ]
+    }
+},
+{
+    "model": "models.group",
+    "pk": 3,
+    "fields": {
+        "name": "Algorithms",
+        "description": "review for midterm",
+        "size": 6,
         "loc": 2,
         "students": [
             2,
