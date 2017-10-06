@@ -100,7 +100,7 @@
 },
 {
     "model": "models.group",
-    "pk": 3,
+    "pk": 4,
     "fields": {
         "name": "time-telling",
         "description": "sign up for easy A",
@@ -114,7 +114,7 @@
 },
 {
     "model": "models.group",
-    "pk": 3,
+    "pk": 5,
     "fields": {
         "name": "Mobile dev",
         "description": "learning about ios dev",
@@ -128,7 +128,7 @@
 },
 {
     "model": "models.group",
-    "pk": 3,
+    "pk": 6,
     "fields": {
         "name": "History",
         "description": "learning easy stuff",
@@ -142,7 +142,7 @@
 },
 {
     "model": "models.group",
-    "pk": 3,
+    "pk": 7,
     "fields": {
         "name": "CS2150",
         "description": "reviewing everything",
@@ -156,7 +156,7 @@
 },
 {
     "model": "models.group",
-    "pk": 3,
+    "pk": 8,
     "fields": {
         "name": "Algorithms",
         "description": "review for midterm",
