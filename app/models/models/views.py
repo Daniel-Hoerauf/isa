@@ -153,6 +153,7 @@ def group_index(request):
             'name': grp.name,
             'size': grp.size,
             'description':grp.description,
+            'id':   grp.pk,
         })
     return JsonResponse(resp)
 
@@ -175,6 +176,7 @@ def get_group(request, group):
         'name': group.name,
         'size': group.size,
         'description':group.description,
+        'id':   group.pk,
     }}
     return JsonResponse(resp)
 

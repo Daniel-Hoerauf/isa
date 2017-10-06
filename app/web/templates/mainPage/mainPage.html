@@ -71,7 +71,7 @@
     {% if name.isEmpty %}
         <p>No groups are available.</p>
      {% else %}
-        {% for i in name %}
+        {% for i in groupList %}
             <div class="row">
 
             <div class="col-lg-4 col-md-6 mb-4">
@@ -79,10 +79,10 @@
                 
                 <div class="card-body">
                   <h4 class="card-title">
-                    <a href="/group?id={{ i }}">{{i}}</a>
+                    <a href="/group?id={{ i.id }}">{{i.name}}</a>
                   </h4>
                  
-                  <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet numquam aspernatur!</p>
+                  <p class="card-text">{{i.description}}</p>
                 </div>
                 
               </div>

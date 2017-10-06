@@ -22,30 +22,35 @@ def hello(request):
     groupList = resp['groups']
     name = []
     size = []
+    gid = []
     for i in groupList:
         name.append(i['name'])
         size.append(i['size'])
+        gid.append(i['id'])
     
     #return HttpResponse(groupList)
-    return render(request, 'mainPage/mainPage.html', {'name':name, 'size':size})
+    return render(request, 'mainPage/mainPage.html', {'name':name, 'size':size, 'groupList':groupList})
     return JsonResponse(resp)
     #return render(request, 'app/mainPage.html')
     
 
 def groupDetail(request):
     if request.method=='GET':
-        name = request.GET.get('id')
+        gid = request.GET.get('id')
+        if gid is None:
+            return HttpResponse("error")
         req = urllib.request.Request('http://exp-api:8000/group/all')
         resp_json = urllib.request.urlopen(req).read().decode('utf-8')
         resp = json.loads(resp_json)
         groups = resp['groups']
-        index = groups.index(name)
-        group = groups[index]
-        size = group['size']
-        name = group['name']
+        group = groups
+        for i in groups:
+            if i['id'] == int(gid):
+                group = i
+                break
      #print(resp)
      #return HttpResponse('Hello group page\n')
      #return HttpResponse(size)
-        return render(request, 'mainPage/group.html', {'name': name, 'size':size})
-        return JsonResponse(resp)
+        return render(request, 'mainPage/group.html', {'group':group})
+        #return JsonResponse(resp)
      
