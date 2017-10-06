@@ -14,39 +14,39 @@ def location_index(self):
     resp = {'status': 'ok', 'locations': []}
     for loc in Location.objects.all():
         resp['locations'].append({
+            'id': loc.pk,
             'building_name': loc.building_name,
             'building_address': loc.building_address,
             'college_name': loc.college_name,
             })
     return JsonResponse(resp)
 
+@require_POST
 def add_location(request):
-    if request.method == "POST":
-        location = Location()
-        location.building_name = request.POST.get("building_name", "")
-        location.college_name = request.POST.get("college_name", "")
-        location.building_address = request.POST.get("building_address", "")
-        location.save()
-        loc_dict = {
-            "building_name": location.building_name,
-            "college_name": location.college_name,
-            "building_address": location.building_address,
-            }
-        data = {}
-        data['ok'] = True
-        data['message'] = "Success"
-        data['result'] = loc_dict
-        return JsonResponse(data)
-    else:
-        data = {}
-        data['ok'] = False
-        data['message'] = "ERROR: Item must be a post request"
-        return JsonResponse(data)
+    building_name = request.POST.get("building_name")
+    college_name = request.POST.get("college_name")
+    building_address = request.POST.get("building_address")
+    if None in [building_name, college_name, building_address]:
+        return JsonResponse({'status': 'bad request'})
+    location = Location(building_name=building_name, college_name=college_name,
+                        building_address=building_address)
+    location.save()
+    loc_dict = {
+        "building_name": location.building_name,
+        "college_name": location.college_name,
+        "building_address": location.building_address,
+        }
+    data = {}
+    data['status'] = 'ok'
+    data['result'] = loc_dict
+    return JsonResponse(data)
 
 def get_location(request, location):
     loc = get_object_or_404(Location, pk=location)
-    resp = {'status': 'empty', 'location': {
+    resp = {'status': 'ok', 'location': {
+        'id': loc.pk,
         'building_name': loc.building_name,
+        'college_name': loc.college_name,
         'building_address': loc.building_address,
     }}
     return JsonResponse(resp)
@@ -56,7 +56,7 @@ def get_location(request, location):
 def delete_location(request, location):
     loc = get_object_or_404(Location, pk=location)
     loc.delete()
-    return JsonResponse({'status': 'okd'})
+    return JsonResponse({'status': 'ok'})
 
 
 @require_POST
@@ -64,15 +64,19 @@ def update_location(request, location):
     loc = get_object_or_404(Location, pk=location)
     name = request.POST.get('building_name')
     address = request.POST.get('building_address')
-    if name is None and address is None:
-        return JsonResponse({'status': 'bad_request'})
+    college_name = request.POST.get('college_name')
+    if name is None and address is None and college_name is None:
+        return JsonResponse({'status': 'bad request'})
     updates = []
     if name:
         updates.append('building_name')
     if address:
         updates.append('building_address')
+    if college_name:
+        updates.append('college_name')
     loc.building_name = name
     loc.building_address = address
+    loc.college_name = college_name
     loc.save(update_fields=updates)
     return JsonResponse({'status': 'ok'})
 
