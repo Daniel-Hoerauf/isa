@@ -141,9 +141,10 @@ def update_student(request, student):
 
 
 def group_index(request):
-    resp = {'status': 'empty', 'groups': []}
+    resp = {'status': 'ok', 'groups': []}
     for grp in Group.objects.all():
         resp['groups'].append({
+            'id':   grp.pk,
             'name': grp.name,
             'size': grp.size,
         })
@@ -164,6 +165,7 @@ def create_group(request):
 def get_group(request, group):
     group = get_object_or_404(Group, pk=group)
     resp = {'status': 'ok', 'group': {
+        'id': group.pk,
         'name': group.name,
         'size': group.size,
     }}

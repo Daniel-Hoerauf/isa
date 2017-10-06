@@ -23,8 +23,9 @@ class Group(models.Model):
     loc = models.ForeignKey('Location',
                             on_delete=models.CASCADE,
                             null=True)
+    students = models.ManyToManyField(Student)
+
     @classmethod
     def create(cls, name, size):
-        group = cls(name=name, year=size)
+        group = cls(name=name, size=size)
         return group
-    students = models.ManyToManyField(Student)
