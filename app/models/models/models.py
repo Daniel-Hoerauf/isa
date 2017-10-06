@@ -20,11 +20,12 @@ class Student(models.Model):
 class Group(models.Model):
     name = models.CharField(max_length=100)
     size = models.IntegerField()
+    description = models.CharField(max_length=100, default='come and learn!')
     loc = models.ForeignKey('Location',
                             on_delete=models.CASCADE,
                             null=True)
     @classmethod
     def create(cls, name, size):
-        group = cls(name=name, size=size)
+        group = cls(name=name, size=size, description=description)
         return group
     students = models.ManyToManyField(Student)
