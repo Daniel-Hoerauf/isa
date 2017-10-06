@@ -1,7 +1,11 @@
-<h1>{{ name }}</h1>
+<h1>{{ group.name }}</h1>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-<h2>Number of students in group: {{ size }} </h2>
+<h2>Number of students in group: group.size {{ size }} </h2>
+
+<h3>Description</h3>
+
+<p>{{group.description}}</p>
 
 {% csrf_token %}
 

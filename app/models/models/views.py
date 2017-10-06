@@ -1,9 +1,6 @@
-from django.shortcuts import HttpResponse, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from django.template import loader
 from django.http import JsonResponse
-from .models import Location, Student
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from .models import Location, Student, Group
@@ -12,46 +9,45 @@ from .models import Location, Student, Group
 
 def index(request):
     return render(request, 'models.html')
-    #return HttpResponse("<h1>Hello, models.</h1>")
 
 def location_index(self):
     model = Location
     resp = {'status': 'ok', 'locations': []}
     for loc in Location.objects.all():
         resp['locations'].append({
+            'id': loc.pk,
             'building_name': loc.building_name,
             'building_address': loc.building_address,
             'college_name': loc.college_name,
             })
     return JsonResponse(resp)
 
+@require_POST
 def add_location(request):
-    if request.method == "POST":
-        location = Location()
-        location.building_name = request.POST.get("building_name", "")
-        location.college_name = request.POST.get("college_name", "")
-        location.building_address = request.POST.get("building_address", "")
-        location.save()
-        loc_dict = {
-            "building_name": location.building_name,
-            "college_name": location.college_name,
-            "building_address": location.building_address,
-            }
-        data = {}
-        data['ok'] = True
-        data['message'] = "Success"
-        data['result'] = loc_dict
-        return JsonResponse(data)
-    else:
-        data = {}
-        data['ok'] = False
-        data['message'] = "ERROR: Item must be a post request"
-        return JsonResponse(data)
+    building_name = request.POST.get("building_name")
+    college_name = request.POST.get("college_name")
+    building_address = request.POST.get("building_address")
+    if None in [building_name, college_name, building_address]:
+        return JsonResponse({'status': 'bad request'})
+    location = Location(building_name=building_name, college_name=college_name,
+                        building_address=building_address)
+    location.save()
+    loc_dict = {
+        "building_name": location.building_name,
+        "college_name": location.college_name,
+        "building_address": location.building_address,
+        }
+    data = {}
+    data['status'] = 'ok'
+    data['result'] = loc_dict
+    return JsonResponse(data)
 
 def get_location(request, location):
     loc = get_object_or_404(Location, pk=location)
-    resp = {'status': 'empty', 'location': {
+    resp = {'status': 'ok', 'location': {
+        'id': loc.pk,
         'building_name': loc.building_name,
+        'college_name': loc.college_name,
         'building_address': loc.building_address,
     }}
     return JsonResponse(resp)
@@ -61,7 +57,7 @@ def get_location(request, location):
 def delete_location(request, location):
     loc = get_object_or_404(Location, pk=location)
     loc.delete()
-    return JsonResponse({'status': 'okd'})
+    return JsonResponse({'status': 'ok'})
 
 
 @require_POST
@@ -69,15 +65,19 @@ def update_location(request, location):
     loc = get_object_or_404(Location, pk=location)
     name = request.POST.get('building_name')
     address = request.POST.get('building_address')
-    if name is None and address is None:
-        return JsonResponse({'status': 'bad_request'})
+    college_name = request.POST.get('college_name')
+    if name is None and address is None and college_name is None:
+        return JsonResponse({'status': 'bad request'})
     updates = []
     if name:
         updates.append('building_name')
     if address:
         updates.append('building_address')
+    if college_name:
+        updates.append('college_name')
     loc.building_name = name
     loc.building_address = address
+    loc.college_name = college_name
     loc.save(update_fields=updates)
     return JsonResponse({'status': 'ok'})
 
@@ -86,15 +86,13 @@ def student_index(request):
     resp = {'status': 'ok', 'students': []}
     for stud in Student.objects.all():
         resp['students'].append({
+            'id': stud.pk,
             'name': stud.name,
             'year': stud.year,
             'groups': [{'id': gr.pk,
                         'name': gr.name}
                        for gr in stud.group_set.all()],
         })
-    #index = Student.objects.all()
-    #groups = Group.objects.all()
-    #return render(request, 'students-all.html', {'students': index, 'grps': groups})
     return JsonResponse(resp)
 
 
@@ -112,6 +110,7 @@ def create_student(request):
 def get_student(request, student):
     stud = get_object_or_404(Student, pk=student)
     resp = {'status': 'ok', 'student': {
+        'id': stud.pk,
         'name': stud.name,
         'year': stud.year,
         'groups': [{'id': gr.pk,
@@ -150,9 +149,10 @@ def group_index(request):
     resp = {'status': 'ok', 'groups': []}
     for grp in Group.objects.all():
         resp['groups'].append({
+            'id':   grp.pk,
             'name': grp.name,
             'size': grp.size,
-            'description':grp.description,
+            'description': grp.description,
         })
     return JsonResponse(resp)
 
@@ -172,9 +172,10 @@ def create_group(request):
 def get_group(request, group):
     group = get_object_or_404(Group, pk=group)
     resp = {'status': 'ok', 'group': {
+        'id': group.pk,
         'name': group.name,
         'size': group.size,
-        'description':group.description,
+        'description': group.description,
     }}
     return JsonResponse(resp)
 
@@ -192,7 +193,7 @@ def update_group(request, group):
     name = request.POST.get('name')
     size = request.POST.get('size')
     description = request.POST.get('description')
-    if name is None and size is None:
+    if name is None and size is None and description is None:
         return JsonResponse({'status': 'bad request'})
     updates = []
     if name:
@@ -209,32 +210,29 @@ def update_group(request, group):
 
 
 @require_POST
-@csrf_exempt
 def remove_from_group(request, group, student):
     stud = get_object_or_404(Student, pk=student)
     if stud is None:
         return JsonResponse({'status': 'ERROR: Student not found'})
     group = get_object_or_404(Group, pk=group)
     if group is None:
-        return JsonResponse({'status':'ERROR: Group not found'})
+        return JsonResponse({'status': 'ERROR: Group not found'})
     if stud in group.student:
         group.students.remove(stud)
     return JsonResponse({'status': 'ok'})
 
 @require_POST
-@csrf_exempt
 def add_to_group(request, group, student):
     stud = get_object_or_404(Student, pk=student)
     if stud is None:
         return JsonResponse({'status': 'ERROR: Student not found'})
     group = get_object_or_404(Group, pk=group)
     if group is None:
-        return JsonResponse({'status':'ERROR: Group not found'})
+        return JsonResponse({'status': 'ERROR: Group not found'})
     group.students.add(stud)
     return JsonResponse({'status': 'ok'})
 
 @require_POST
-@csrf_exempt
 def tag_group(request, group, location):
     loc = get_object_or_404(Location, pk=location)
     group = get_object_or_404(Group, pk=group)
@@ -243,7 +241,6 @@ def tag_group(request, group, location):
     return JsonResponse({'status': 'ok'})
 
 @require_POST
-@csrf_exempt
 def untag_group(request, group):
     group = get_object_or_404(Group, pk=group)
     group.loc = None

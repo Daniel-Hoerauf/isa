@@ -20,12 +20,16 @@ class Student(models.Model):
 class Group(models.Model):
     name = models.CharField(max_length=100)
     size = models.IntegerField()
-    description = models.CharField(max_length=100, default='come and learn!')
+    description = models.CharField(max_length=100, default='Come and learn!')
     loc = models.ForeignKey('Location',
                             on_delete=models.CASCADE,
                             null=True)
-    @classmethod
-    def create(cls, name, size):
-        group = cls(name=name, size=size, description=description)
-        return group
     students = models.ManyToManyField(Student)
+
+    @classmethod
+    def create(cls, name, size, description):
+        if description is None:
+            group = cls(name=name, size=size)
+        else:
+            group = cls(name=name, size=size, description=description)
+        return group
