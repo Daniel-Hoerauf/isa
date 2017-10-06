@@ -67,7 +67,31 @@
         <div class="col-lg-9">
 
          
-            
+    {% if latest_group_list %}
+        <ul>
+        {% for group in latest_group_list %}
+            <div class="row">
+
+            <div class="col-lg-4 col-md-6 mb-4">
+              <div class="card h-100">
+                
+                <div class="card-body">
+                  <h4 class="card-title">
+                    <li><a href="{% url 'polls:detail' group.id %}">{{ group.group_text }}</a></li>
+                  </h4>
+                 
+                  <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet numquam aspernatur!</p>
+                </div>
+                <div class="card-footer">
+                  <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
+                </div>
+              </div>
+            </div>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No groups are available.</p>
+    {% endif %}
           
 
           <div class="row">

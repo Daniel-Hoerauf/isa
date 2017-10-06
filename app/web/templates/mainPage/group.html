@@ -1,0 +1,8 @@
+<h1>{{ name }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<h2>Number of students in group: {{ size }} </h2>
+
+{% csrf_token %}
+
+<button type="button">Join Group</button>
