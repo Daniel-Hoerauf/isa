@@ -7,7 +7,7 @@ urlpatterns = [
 
     # Location endpoints
     url(r'^location/all/$', views.location_index, name='location_index'),
-    url(r'^location/new/$', views.add_location, name='add_location'),
+    url(r'^location/new/$', views.add_location, name='create_location'),
     url(r'^location/(?P<location>[0-9]+)/$', views.get_location,
         name='get_location'),
     url(r'^location/(?P<location>[0-9]+)/delete/$', views.delete_location,
