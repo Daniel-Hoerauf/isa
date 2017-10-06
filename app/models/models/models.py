@@ -25,6 +25,6 @@ class Group(models.Model):
                             null=True)
     @classmethod
     def create(cls, name, size):
-        group = cls(name=name, year=size)
+        group = cls(name=name, size=size)
         return group
     students = models.ManyToManyField(Student)
