@@ -93,6 +93,9 @@ def student_index(request):
                         'name': gr.name}
                        for gr in stud.group_set.all()],
         })
+    #index = Student.objects.all()
+    #groups = Group.objects.all()
+    #return render(request, 'students-all.html', {'students': index, 'grps': groups})
     return JsonResponse(resp)
 
 
@@ -154,6 +157,8 @@ def group_index(request):
             'size': grp.size,
             'description': grp.description,
         })
+    #groups = Group.objects.all()
+    #return render(request, 'groups-all.html', {'groups': groups})
     return JsonResponse(resp)
 
 
