@@ -24,6 +24,7 @@ class GetGroupIndexTestCase(TransactionTestCase):
             'id': 1,
             'size': 3,
             'name': 'Test Group',
+            'description': 'Come and learn!',
         }, ])
 
     def test_success_many(self):
@@ -38,11 +39,13 @@ class GetGroupIndexTestCase(TransactionTestCase):
                 'id': 1,
                 'size': 2,
                 'name': 'Test Group',
+                'description': 'Come and learn!',
             },
             {
                 'id': 2,
                 'size': 3,
                 'name': 'Test Group 2',
+                'description': 'Come and learn!',
             }
         ])
 
@@ -57,7 +60,8 @@ class CRUDUserTestCase(TransactionTestCase):
     def test_create_get(self):
         response = self.client.post(reverse('create_group'),
                                     {'name': 'Test Group',
-                                     'size': 3}).json()
+                                     'size': 3,
+                                     'description': 'This is a test group'}).json()
         self.assertEqual(response['status'], 'ok')
 
         response = self.client.get(reverse('get_group', args=[1])).json()
@@ -66,6 +70,7 @@ class CRUDUserTestCase(TransactionTestCase):
             'id': 1,
             'name': 'Test Group',
             'size': 3,
+            'description': 'This is a test group',
         })
 
     def test_crud_failure(self):
@@ -108,6 +113,7 @@ class CRUDUserTestCase(TransactionTestCase):
             'id': 1,
             'name': 'Updated Group',
             'size': 0,
+            'description': 'Come and learn!',
         })
 
         response = self.client.post(reverse('update_group', args=[1]),
@@ -118,6 +124,7 @@ class CRUDUserTestCase(TransactionTestCase):
             'id': 1,
             'name': 'Updated Group',
             'size': 1,
+            'description': 'Come and learn!',
         })
 
         response = self.client.post(reverse('update_group', args=[1]),
@@ -128,6 +135,7 @@ class CRUDUserTestCase(TransactionTestCase):
             'id': 1,
             'name': 'Test Group',
             'size': 2,
+            'description': 'Come and learn!',
         })
 
     def test_delete(self):

@@ -1,4 +1,5 @@
-from django.shortcuts import HttpResponse, get_object_or_404
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
@@ -7,7 +8,7 @@ from .models import Location, Student, Group
 
 
 def index(request):
-    return HttpResponse("<h1>Hello, models.</h1>")
+    return render(request, 'models.html')
 
 def location_index(self):
     model = Location
@@ -151,6 +152,7 @@ def group_index(request):
             'id':   grp.pk,
             'name': grp.name,
             'size': grp.size,
+            'description': grp.description,
         })
     return JsonResponse(resp)
 
@@ -159,9 +161,10 @@ def group_index(request):
 def create_group(request):
     name = request.POST.get('name')
     size = request.POST.get('size')
+    description = request.POST.get('description')
     if None in [name, size]:
         return JsonResponse({'status': 'bad request'})
-    group = Group.create(name, size)
+    group = Group.create(name, size, description)
     group.save()
     return JsonResponse({'status': 'ok'})
 
@@ -172,6 +175,7 @@ def get_group(request, group):
         'id': group.pk,
         'name': group.name,
         'size': group.size,
+        'description': group.description,
     }}
     return JsonResponse(resp)
 
@@ -188,15 +192,19 @@ def update_group(request, group):
     group = get_object_or_404(Group, pk=group)
     name = request.POST.get('name')
     size = request.POST.get('size')
-    if name is None and size is None:
+    description = request.POST.get('description')
+    if name is None and size is None and description is None:
         return JsonResponse({'status': 'bad request'})
     updates = []
     if name:
         updates.append('name')
     if size:
         updates.append('size')
+    if description:
+        updates.append('description')
     group.name = name
     group.size = size
+    group.description = description
     group.save(update_fields=updates)
     return JsonResponse({'status': 'ok'})
 
