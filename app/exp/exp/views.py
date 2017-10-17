@@ -29,9 +29,8 @@ def get_group(request, group):
 def create_user(request):
     return JsonResponse({'status': 'ok'})
 
-def authenticate_user(request):
+def login(request):
     return JsonResponse({'status': 'ok'})
 
-def validate_authenticator(request):
-    return JsonResponse({'status': 'ok',
-                         'authenticated': False})
+def logout(request):
+    return JsonResponse({'status': 'ok'})

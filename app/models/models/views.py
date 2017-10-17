@@ -2,8 +2,10 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.contrib.auth.hashers import make_password, check_password
 
-from .models import Location, Student, Group
+from .models import Location, Student, Group, User, Authenticator
+from .models import create_authenticator, clean_authenticators
 
 
 
@@ -93,9 +95,6 @@ def student_index(request):
                         'name': gr.name}
                        for gr in stud.group_set.all()],
         })
-    #index = Student.objects.all()
-    #groups = Group.objects.all()
-    #return render(request, 'students-all.html', {'students': index, 'grps': groups})
     return JsonResponse(resp)
 
 
@@ -157,8 +156,6 @@ def group_index(request):
             'size': grp.size,
             'description': grp.description,
         })
-    #groups = Group.objects.all()
-    #return render(request, 'groups-all.html', {'groups': groups})
     return JsonResponse(resp)
 
 
@@ -242,4 +239,59 @@ def untag_group(request, group):
     group = get_object_or_404(Group, pk=group)
     group.loc = None
     group.save(update_fields=['loc'])
+    return JsonResponse({'status': 'ok'})
+
+
+@require_POST
+def validate(request, user):
+    auth = request.POST.get('authenticator', '')
+    authenticator = get_object_or_404(Authenticator, pk=auth)
+    valid = user == authenticator.user_id.pk
+    return JsonResponse({'status': 'ok',
+                         'authenticated': True})
+
+
+@require_POST
+def create_user(request):
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    name = request.POST.get('name')
+    year = int(request.POST.get('year'))
+    if None in [username, password, name]:
+        return JsonResponse({'status': 'bad request',
+                             'authenticated': False,
+                             'authenticator': None,
+                             'message': 'Must have username, password, name, year'})
+
+    student = Student.create(name, year)
+    student.save()
+    pass_hash = make_password(password)
+    user = User(student=student, username=username, password=pass_hash)
+    user.save()
+
+    authenticator = create_authenticator(user)
+    return JsonResponse({'status': 'ok',
+                         'authenticated': True,
+                         'authenticator': authenticator})
+
+
+@require_POST
+def login(request, user):
+    password = request.POST.get('password', '')
+    user = get_object_or_404(User, pk=user)
+    if not check_password(password, user.password):
+        return JsonResponse({'status': 'ok',
+                             'authenticated': False,
+                             'authenticator': None})
+    authenticator = create_authenticator(user)
+    return JsonResponse({'status': 'ok',
+                         'authenticated': True,
+                         'authenticator': authenticator})
+
+@require_POST
+def logout(request):
+    auth = request.POST.get('authenticator')
+    authenticator = get_object_or_404(Authenticator, pk=auth)
+    auth.delete()
+    clean_authenticators()
     return JsonResponse({'status': 'ok'})

@@ -1,5 +1,9 @@
+import hmac
+import os
 from datetime import datetime, timedelta
 from django.db import models
+
+from . import settings
 
 
 
@@ -37,13 +41,17 @@ class Group(models.Model):
 
 class User(models.Model):
     student = models.OneToOneField(Student, on_delete=models.CASCADE)
+    username = models.CharField(max_length=30)
     password = models.CharField(max_length=1000)
 
 
 class Authenticator(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    authenticator = models.CharField(max_length=1000, primary_key=True)
+    authenticator = models.CharField(max_length=255, primary_key=True)
     date_created = models.DateTimeField(auto_now=True)
+
+    def serialize(self):
+        return self.authenticator
 
 
 def clean_authenticators(authenticator):
@@ -51,3 +59,18 @@ def clean_authenticators(authenticator):
     old_auths = Authenticator.objects.filter(date_created__lte=expired_date)
     for auth in old_auths:
         auth.delete()
+
+def create_authenticator(user):
+    auth = None
+    while True:
+        auth = hmac.new(
+            key=settings.SECRET_KEY.encode('utf=8'),
+            msg=os.urandom(32),
+            digestmod='sha256',
+        ).hexdigest()
+        exists = Authenticator.objects.get(authenticator=auth)
+        if not exists:
+            # If authenticator matches one already in use generate another
+            break
+    authenticator = Authenticator(user_id=user, authenticator=auth)
+    return authenticator.serialize()
