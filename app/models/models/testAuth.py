@@ -1,6 +1,6 @@
 from django.test import TransactionTestCase
 from django.core.urlresolvers import reverse
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, make_password
 
 from .models import User, Authenticator, Student
 
@@ -65,6 +65,38 @@ class UserManagementTestCase(TransactionTestCase):
         self.assertEqual(resp['status'], 'bad request')
         self.assertEqual(resp['authenticated'], False)
 
+    def test_login(self):
+        stud = Student(name='Test Student', year=3)
+        stud.save()
+        passwd = make_password('p4ssw0rd')
+        user = User(student=stud, password=passwd, username='test_user')
+        user.save()
+
+        resp = self.client.post(reverse('login', args=[user.pk]),
+                                {'password': 'p4ssw0rd'}).json()
+        self.assertEqual(resp['status'], 'ok')
+        self.assertEqual(resp['authenticated'], True)
+
+        auth = Authenticator.objects.get(pk=resp['authenticator'])
+        self.assertEqual(auth.user_id, user)
+
+    def test_login_bad(self):
+        stud = Student(name='Test Student', year=3)
+        stud.save()
+        passwd = make_password('p4ssw0rd')
+        user = User(student=stud, password=passwd, username='test_user')
+        user.save()
+
+        resp = self.client.post(reverse('login', args=[user.pk]),
+                                {'password': 'password'}).json()
+        self.assertEqual(resp['status'], 'ok')
+        self.assertFalse(resp['authenticated'])
+        self.assertFalse(resp['authenticator'])
+
+        resp = self.client.post(reverse('login', args=[user.pk])).json()
+        self.assertEqual(resp['status'], 'ok')
+        self.assertFalse(resp['authenticated'])
+        self.assertFalse(resp['authenticator'])
 
 class AuthenticatorTestCase(TransactionTestCase):
     def setUp(self):
