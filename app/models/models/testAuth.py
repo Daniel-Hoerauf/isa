@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.hashers import check_password, make_password
 
 from .models import User, Authenticator, Student
+from .models import create_authenticator
 
 class UserManagementTestCase(TransactionTestCase):
     def setUp(self):
@@ -97,6 +98,21 @@ class UserManagementTestCase(TransactionTestCase):
         self.assertEqual(resp['status'], 'ok')
         self.assertFalse(resp['authenticated'])
         self.assertFalse(resp['authenticator'])
+
+    def test_logout(self):
+        stud = Student(name='Test Student', year=3)
+        stud.save()
+        passwd = make_password('p4ssw0rd')
+        user = User(student=stud, password=passwd, username='test_user')
+        user.save()
+
+        auth = create_authenticator(user)
+        self.assertTrue(Authenticator.objects.get(authenticator=auth))
+
+        resp = self.client.post(reverse('logout'), {'authenticator': auth}
+                                ).json()
+        self.assertEqual(Authenticator.objects.all().count(), 0)
+
 
 class AuthenticatorTestCase(TransactionTestCase):
     def setUp(self):

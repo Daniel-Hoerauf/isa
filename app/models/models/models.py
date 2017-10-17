@@ -1,7 +1,9 @@
 import hmac
 import os
-from datetime import datetime, timedelta
+from datetime import timedelta
+
 from django.db import models
+from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 
 from . import settings
@@ -55,8 +57,8 @@ class Authenticator(models.Model):
         return self.authenticator
 
 
-def clean_authenticators(authenticator):
-    expired_date = datetime.now() - timedelta(hours=8)
+def clean_authenticators():
+    expired_date = timezone.now() - timedelta(hours=8)
     old_auths = Authenticator.objects.filter(date_created__lte=expired_date)
     for auth in old_auths:
         auth.delete()

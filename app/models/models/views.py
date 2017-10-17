@@ -292,6 +292,6 @@ def login(request, user):
 def logout(request):
     auth = request.POST.get('authenticator')
     authenticator = get_object_or_404(Authenticator, pk=auth)
-    auth.delete()
+    authenticator.delete()
     clean_authenticators()
     return JsonResponse({'status': 'ok'})
