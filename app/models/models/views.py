@@ -246,9 +246,9 @@ def untag_group(request, group):
 def validate(request, user):
     auth = request.POST.get('authenticator', '')
     authenticator = get_object_or_404(Authenticator, pk=auth)
-    valid = user == authenticator.user_id.pk
+    valid = str(user) == str(authenticator.user_id.pk)
     return JsonResponse({'status': 'ok',
-                         'authenticated': True})
+                         'authenticated': valid})
 
 
 @require_POST

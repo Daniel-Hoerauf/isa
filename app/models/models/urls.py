@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^login/(?P<user>[0-9]+)/$', views.login, name='login'),
     url(r'^logout/$', views.logout, name='logout'),
     url(r'^signup/$', views.create_user, name='signup'),
-    url(r'^validate/(P?<user>[0-9]+)/$', views.validate, name='validate'),
+    url(r'^validate/(?P<user>[0-9]+)/$', views.validate, name='validate'),
 
     # Location endpoints
     url(r'^location/all/$', views.location_index, name='location_index'),
