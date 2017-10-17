@@ -256,8 +256,8 @@ def create_user(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
     name = request.POST.get('name')
-    year = int(request.POST.get('year'))
-    if None in [username, password, name]:
+    year = int(request.POST.get('year', "-1"))
+    if None in [username, password, name] or year < 0:
         return JsonResponse({'status': 'bad request',
                              'authenticated': False,
                              'authenticator': None,

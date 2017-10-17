@@ -2,6 +2,7 @@ import hmac
 import os
 from datetime import datetime, timedelta
 from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
 
 from . import settings
 
@@ -68,9 +69,11 @@ def create_authenticator(user):
             msg=os.urandom(32),
             digestmod='sha256',
         ).hexdigest()
-        exists = Authenticator.objects.get(authenticator=auth)
-        if not exists:
+        try:
+            exists = Authenticator.objects.get(authenticator=auth)
+        except ObjectDoesNotExist:
             # If authenticator matches one already in use generate another
             break
     authenticator = Authenticator(user_id=user, authenticator=auth)
+    authenticator.save()
     return authenticator.serialize()
