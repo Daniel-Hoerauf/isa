@@ -22,7 +22,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^group/all/$', views.group_index, name='group_index'),
     url(r'^group/(?P<group>[0-9]+)/$', views.get_group, name='get_group'),
-
     # Authentication urls
     url(r'^login/$', views.login, name='login'),
     url(r'^logout/$', views.logout, name='logout'),

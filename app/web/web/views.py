@@ -53,4 +53,7 @@ def groupDetail(request):
      #return HttpResponse(size)
         return render(request, 'mainPage/group.html', {'group':group})
         #return JsonResponse(resp)
-     
+        
+def signup(request):
+    
+    req = request.post('http://exp-api:8000/signup', data)

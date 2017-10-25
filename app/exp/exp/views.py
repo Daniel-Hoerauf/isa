@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 import urllib.request
 import urllib.parse
 import json
+import requests
 from django.http import JsonResponse
 
 
@@ -27,7 +28,16 @@ def get_group(request, group):
     return JsonResponse(resp)
 
 def create_user(request):
-    return JsonResponse({'status': 'ok'})
+    data = {}
+    data['username'] = 'tester'
+    data['name'] = 'brigham'
+    data['password'] = 'notpassword'
+    data['year'] = 4
+    r = requests.post('http://models-api:8000/signup/',data).json()
+    if r['status'] == 'ok':
+        return HttpResponse(r['status'])
+    else:
+        return HttpResponse(r['status'])
 
 def login(request):
     return JsonResponse({'status': 'ok'})

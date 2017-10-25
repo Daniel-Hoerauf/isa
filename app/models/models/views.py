@@ -7,8 +7,6 @@ from django.contrib.auth.hashers import make_password, check_password
 from .models import Location, Student, Group, User, Authenticator
 from .models import create_authenticator, clean_authenticators
 
-
-
 def index(request):
     return render(request, 'models.html')
 

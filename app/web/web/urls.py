@@ -22,5 +22,6 @@ urlpatterns = [
     url(r'^$', views.hello),
     url(r'^admin/', admin.site.urls),
     url(r'^group/',views.groupDetail, name='detail'),
+    url(r'^signup/',views.signup, name='signup'),
 
 ]
