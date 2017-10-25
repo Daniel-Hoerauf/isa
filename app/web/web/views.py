@@ -29,7 +29,7 @@ def hello(request):
         gid.append(i['id'])
     
     #return HttpResponse(groupList)
-    return render(request, 'mainPage/mainPage.html', {'name':name, 'size':size, 'groupList':groupList})
+    return render(request, 'mainPage.html', {'name':name, 'size':size, 'groupList':groupList})
     return JsonResponse(resp)
     #return render(request, 'app/mainPage.html')
     
