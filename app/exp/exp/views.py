@@ -39,12 +39,15 @@ def create_user(request):
     return JsonResponse(resp)
 
 def login(request):
-    resp = requests.post(reverse('login', args=[user.pk]),{'password': 'p4ssw0rd'}).json()
-    if resp['status']=='ok' and resp['authenticated']==True:
-        auth = Authenticator.objects.get(pk=resp['authenticator'])
-        if auth.user_id == user:
-            return True
-    return False
+    data = {}
+    data['username'] = 'tester'
+    data['name'] = 'brigham'
+    data['password'] = 'notpassword'
+    data['year'] = 4
+    string = 'http://models-api:8001/login/'
+    #string+= user.pk
+    resp = requests.post(string,data).json()
+    return JsonResponse(resp)
     #return JsonResponse(resp)
     #return JsonResponse({'status': 'ok'})
 
