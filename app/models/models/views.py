@@ -241,12 +241,12 @@ def untag_group(request, group):
 
 
 @require_POST
-def validate(request, user):
+def validate(request):
     auth = request.POST.get('authenticator', '')
     authenticator = get_object_or_404(Authenticator, pk=auth)
-    valid = str(user) == str(authenticator.user_id.pk)
+    # valid = str(user) == str(authenticator.user_id.pk)
     return JsonResponse({'status': 'ok',
-                         'authenticated': valid})
+                         'authenticated': True})
 
 
 @require_POST
@@ -293,3 +293,10 @@ def logout(request):
     authenticator.delete()
     clean_authenticators()
     return JsonResponse({'status': 'ok'})
+
+@require_POST
+def get_user_pk(request):
+    username = request.POST.get('username')
+    user = get_object_or_404(User, username=username)
+    return JsonResponse({'status': 'ok',
+                         'user': user.pk})
