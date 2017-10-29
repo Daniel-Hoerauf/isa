@@ -56,3 +56,13 @@ def logout(request):
     string+= user.pk
     resp = requests.post(string).json()
     return JsonResponse(resp)
+
+def create_group(request):
+    string = 'http://models-api:8001/group/new/'
+    data = {}
+    data['name']='algo midterm'
+    data['size']=4
+    data['description']='last minute'
+    resp = requests.post(string,data).json()
+    return JsonResponse(resp)
+    
