@@ -35,7 +35,10 @@ def create_user(request):
     data['name'] = 'brigham'
     data['password'] = 'notpassword'
     data['year'] = 4
-    resp = requests.post('http://models-api:8000/signup/',data).json()
+    resp = requests.post('http://models-api:8000/signup/',data)
+    if resp.status_code == 404:
+        return JsonResponse({'status': 'error',})
+    resp = resp.json()
     return JsonResponse(resp)
 
 def login(request):
@@ -44,8 +47,9 @@ def login(request):
     data['name'] = 'brigham'
     data['password'] = 'notpassword'
     data['year'] = 4
-    resp = requests.post('http://models-api:8001/get_user_pk/',data).json()
-    string = 'http://models-api:8001/login/'
+    resp = requests.post('http://models-api:8000/get_user_pk/',data)
+    return HttpResponse(resp)
+    string = 'http://models-api:8000/login/'
     string += resp['user']
     resp = requests.post(string).json()
     return JsonResponse(resp)

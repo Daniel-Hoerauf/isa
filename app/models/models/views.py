@@ -255,18 +255,22 @@ def create_user(request):
     password = request.POST.get('password')
     name = request.POST.get('name')
     year = int(request.POST.get('year', "-1"))
+    r = get_user_pk(request)
+    if r.status_code != 404:
+        return JsonResponse({'status': 'bad request',
+                             'authenticated': False,
+                             'authenticator': None,
+                             'message': 'username already exists'})
     if None in [username, password, name] or year < 0:
         return JsonResponse({'status': 'bad request',
                              'authenticated': False,
                              'authenticator': None,
                              'message': 'Must have username, password, name, year'})
-
     student = Student.create(name, year)
     student.save()
     pass_hash = make_password(password)
     user = User(student=student, username=username, password=pass_hash)
     user.save()
-
     authenticator = create_authenticator(user)
     return JsonResponse({'status': 'ok',
                          'authenticated': True,
