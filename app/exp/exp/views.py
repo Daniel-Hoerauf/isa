@@ -44,9 +44,10 @@ def login(request):
     data['name'] = 'brigham'
     data['password'] = 'notpassword'
     data['year'] = 4
+    resp = requests.post('http://models-api:8001/get_user_pk/',data).json()
     string = 'http://models-api:8001/login/'
-    string+= user.pk
-    resp = requests.post(string,data).json()
+    string += resp['user']
+    resp = requests.post(string).json()
     return JsonResponse(resp)
     #return JsonResponse(resp)
     #return JsonResponse({'status': 'ok'})
