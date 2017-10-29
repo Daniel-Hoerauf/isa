@@ -45,14 +45,14 @@ def login(request):
     data['password'] = 'notpassword'
     data['year'] = 4
     string = 'http://models-api:8001/login/'
-    #string+= user.pk
+    string+= user.pk
     resp = requests.post(string,data).json()
     return JsonResponse(resp)
     #return JsonResponse(resp)
     #return JsonResponse({'status': 'ok'})
 
 def logout(request):
-    auth = create_authenticator(user)
-    if Authenticator.objects.get(authenticator=auth) == True:
-        resp = requests.post(reverse('logout'), {'authenticator': auth}).json()
+    string = 'http://models-api:8001/login/'
+    string+= user.pk
+    resp = requests.post(string).json()
     return JsonResponse(resp)
