@@ -35,10 +35,10 @@ def create_user(request):
     data['name'] = 'brigham'
     data['password'] = 'notpassword'
     data['year'] = 4
-    resp = requests.post('http://models-api:8000/signup/',data)
-    if resp.status_code == 404:
-        return JsonResponse({'status': 'error',})
-    resp = resp.json()
+    resp = requests.post('http://models-api:8000/get_user_pk/',data)
+    if resp.status_code != 404:
+        return JsonResponse({'status':'error'})
+    resp = requests.post('http://models-api:8000/signup/',data).json()
     return JsonResponse(resp)
 
 def login(request):
