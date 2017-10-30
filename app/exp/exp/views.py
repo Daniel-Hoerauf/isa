@@ -48,26 +48,25 @@ def login(request):
     data['password'] = 'notpassword'
     data['year'] = 4
     resp = requests.post('http://models-api:8000/get_user_pk/',data)
-    return HttpResponse(resp)
+    if resp.status_code == 404:
+        return JsonResponse({'status':'error'})
+    resp = resp.json()
     string = 'http://models-api:8000/login/'
-    string += resp['user']
-    resp = requests.post(string).json()
+    string += str(resp['user']) + "/"
+    resp = requests.post(string,data).json()
     return JsonResponse(resp)
-    #return JsonResponse(resp)
-    #return JsonResponse({'status': 'ok'})
 
 def logout(request):
-    string = 'http://models-api:8001/login/'
-    string+= user.pk
-    resp = requests.post(string).json()
+    data = {}
+    data['authenticator'] = 'b76104d4774bafe5d0cb50f5f6132863da9627770b9b60b13c99e375cb698c61'
+    resp = requests.post('http://models-api:8000/logout/',data).json()
     return JsonResponse(resp)
 
 def create_group(request):
-    string = 'http://models-api:8001/group/new/'
     data = {}
     data['name']='algo midterm'
     data['size']=4
     data['description']='last minute'
-    resp = requests.post(string,data).json()
+    resp = requests.post('http://models-api:8000/group/new/',data).json()
     return JsonResponse(resp)
     

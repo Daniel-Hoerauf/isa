@@ -26,4 +26,6 @@ urlpatterns = [
     url(r'^login/$', views.login, name='login'),
     url(r'^logout/$', views.logout, name='logout'),
     url(r'^signup/$', views.create_user, name='signup'),
+    #listings
+    url(r'^creategroup/$', views.create_group, name='creategroup'),
 ]
