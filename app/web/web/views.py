@@ -29,7 +29,7 @@ def hello(request):
         gid.append(i['id'])
     
     #return HttpResponse(groupList)
-    return render(request, 'mainPage/mainPage.html', {'name':name, 'size':size, 'groupList':groupList})
+    return render(request, 'mainPage.html', {'name':name, 'size':size, 'groupList':groupList})
     return JsonResponse(resp)
     #return render(request, 'app/mainPage.html')
     
@@ -53,4 +53,7 @@ def groupDetail(request):
      #return HttpResponse(size)
         return render(request, 'mainPage/group.html', {'group':group})
         #return JsonResponse(resp)
-     
+        
+def signup(request):
+    
+    req = request.post('http://exp-api:8000/signup', data)

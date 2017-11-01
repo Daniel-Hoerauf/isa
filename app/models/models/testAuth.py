@@ -131,27 +131,8 @@ class AuthenticatorTestCase(TransactionTestCase):
         auth = create_authenticator(user)
         self.assertTrue(Authenticator.objects.get(authenticator=auth))
 
-        resp = self.client.post(reverse('validate', args=[user.pk]),
+        resp = self.client.post(reverse('validate'),
                                 {'authenticator': auth}).json()
         self.assertEqual(resp['status'], 'ok')
         self.assertTrue(resp['authenticated'])
 
-    def test_validate_bad(self):
-        stud = Student(name='Test Student', year=3)
-        stud.save()
-        passwd = make_password('p4ssw0rd')
-        user = User(student=stud, password=passwd, username='test_user')
-        user.save()
-        auth = create_authenticator(user)
-
-        stud_2 = Student(name='Test Student 2', year=3)
-        stud_2.save()
-        passwd_2 = make_password('p4ssw0rd')
-        user_2 = User(student=stud_2, password=passwd_2, username='test_user_2')
-        user_2.save()
-        auth_2 = create_authenticator(user_2)
-
-        resp = self.client.post(reverse('validate', args=[user.pk]),
-                                {'authenticator': auth_2}).json()
-        self.assertEqual(resp['status'], 'ok')
-        self.assertFalse(resp['authenticated'])
