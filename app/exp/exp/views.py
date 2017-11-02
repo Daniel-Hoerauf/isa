@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 import json
 import requests
 from django.http import JsonResponse
+from kafka import KafkaProducer
 
 
 def hello(request):
@@ -67,6 +68,12 @@ def create_group(request):
     data['name']='algo midterm'
     data['size']=4
     data['description']='last minute'
+    
+    #add to kafka
+    producer = KafkaProducer(bootstrap_servers='kafka:9092')
+    some_new_group = {'name': data['name'], 'size': data['size'], 'description': data['description']}
+    producer.send('new-groups-topic', json.dumps(some_new_group).encode('utf-8'))
+    
     resp = requests.post('http://models-api:8000/group/new/',data).json()
     return JsonResponse(resp)
     
