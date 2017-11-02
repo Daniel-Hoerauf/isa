@@ -72,7 +72,7 @@ def create_group(request):
     #add to kafka
     producer = KafkaProducer(bootstrap_servers='kafka:9092')
     some_new_group = {'name': data['name'], 'size': data['size'], 'description': data['description']}
-    producer.send('new-groups-topic', json.dumps(some_new_group).encode('utf-8'))
+    producer.send('new-listing-topic', json.dumps(some_new_group).encode('utf-8'))
     
     resp = requests.post('http://models-api:8000/group/new/',data).json()
     return JsonResponse(resp)
