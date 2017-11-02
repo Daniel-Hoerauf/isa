@@ -55,7 +55,7 @@ web:
    command: |
       bash -c '
       cd /app/web;
-      pip3 install requests && mod_wsgi-express start-server --working-directory /app/web --reload-on-changes web/wsgi.py
+      pip3 install requests && mod_wsgi-express start-server --url-alias /static static --working-directory /app/web --reload-on-changes web/wsgi.py
       '
 
 batch:
