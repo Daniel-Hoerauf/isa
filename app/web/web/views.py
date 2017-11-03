@@ -137,12 +137,13 @@ def create_group(request):
         data['size'] = request.POST.get('size', '')
         data['description'] = request.POST.get('description', '')
         data['loc'] = request.POST.get('loc', '')
-        #if data['name'] == '' or data['size'] == None or data['description'] == '' or data['loc'] == '':
-            #return render(request, 'newGroup.html', {})
-        resp = requests.post('http://exp-api:8000/creategroup/',data)
-        return HttpResponse(resp)
-        
-        if resp.status_code == 'ok':
-            return hello(request)
-        else:
+        if data['name'] == '' or data['size'] == None or data['description'] == '':
             return render(request, 'newGroup.html', {})
+        resp = requests.post('http://exp-api:8000/creategroup/',data).json()
+        #return HttpResponse(resp)
+        
+        if resp['status'] == 'ok':
+            response = HttpResponseRedirect('/')
+        else:
+            response = HttpResponseRedirect('/newgroup')
+        return response

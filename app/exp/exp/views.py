@@ -74,10 +74,15 @@ def logout(request):
 @csrf_exempt
 def create_group(request):
     data = {}
-    data['name'] = 'algo midterm'
-    data['size'] = 4
-    data['description'] = 'last minute'
-
+    #data['name'] = 'algo midterm'
+    #data['size'] = 4
+    #data['description'] = 'last minute'
+    
+    data['name'] = request.POST.get('name', '')
+    data['size'] = request.POST.get('size', '')
+    data['description'] = request.POST.get('description', '')
+    data['loc'] = request.POST.get('loc', '')
+    
     # Add to kafka
     producer = KafkaProducer(bootstrap_servers='kafka:9092')
     some_new_group = {'name': data['name'], 'size': data['size'], 'description': data['description']}
