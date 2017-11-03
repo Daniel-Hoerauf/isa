@@ -1,7 +1,4 @@
 from django.shortcuts import HttpResponse
-from django.shortcuts import render
-from django.template import loader
-from django.views import generic
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.shortcuts import render, redirect
@@ -9,6 +6,7 @@ from django.views.generic import View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
 
 
 import urllib.request
@@ -44,8 +42,11 @@ def hello(request):
     #return render(request, 'app/mainPage.html')
     
 
+    return render(request, 'mainPage.html', {'name': name, 'size': size,
+                                             'groupList': groupList})
+
 def groupDetail(request):
-    if request.method=='GET':
+    if request.method == 'GET':
         gid = request.GET.get('id')
         if gid is None:
             return HttpResponse("error")
@@ -63,8 +64,6 @@ def groupDetail(request):
      #return HttpResponse(size)
         return render(request, 'group.html', {'group':group})
         #return JsonResponse(resp)
-   
-@csrf_exempt
 def signup(request):
     context = {}
     if request.method == 'GET':
@@ -89,6 +88,19 @@ def signup(request):
     response.set_cookie('authenticator', authenticator)
     
 @csrf_exempt
+    pass
+
+def search(request):
+    query = request.GET.get('query')
+    context = {}
+    if query is None or query.strip() == '':
+        context = {'searched': False}
+    else:
+        context = requests.get('http://exp-api:8000/search/',
+                               {'query': query.strip()}).json()
+        context['searched'] = True
+    return render(request, 'search.html', context)
+
 def login(request):
     context = {}
     if request.method == 'GET':
@@ -122,7 +134,7 @@ def create_group(request):
     data['name']='algo midterm'
     data['size']=4
     data['description']='last minute'
-    
+
     context = {}
     if request.method == 'GET':
         return render(request, 'newGroup.html', context)

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="jumbotron text-center">
+        <h1>Search for groups</h1>
+        <form action="{% url 'search' %}" method="GET" role="form">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="input-group input-group-lg">
+                  <input type="text" class="form-control" name="query" />
+                <div class="input-group-btn">
+                  <input type="submit" class="btn">Search</button>
+                </div><!-- /btn-group -->
+              </div><!-- /input-group -->
+            </div><!-- /.col-xs-12 -->
+          </div><!-- /.row -->
+        </form>
+      </div>
+    </div>
+  </div>
+  {% if searched and not valid %}
+  <div class="row">
+    <h2>No results found. Try searching for something else</h2>
+  </div>
+  {% else %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="list-group">
+      {% for hit in hits %}
+      <a href="/group/?id={{ hit.id }}" class="list-group-item list-group-item-action flex-column align-items-start">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">{{ hit.name }}</h5>
+    </div>
+    <p class="mb-1">{{ hit.description }}</p>
+  </a>
+      {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,8 +1,16 @@
 import json
+import requests
 from elasticsearch import Elasticsearch
 from time import sleep
 from kafka import KafkaConsumer
 
+def initial_migration():
+    es = Elasticsearch(['es'])
+    resp = requests.post('http://models-api:8000/group/all/').json()
+    for group in resp['groups']:
+        es.index(index='listing_index', doc_type='listing', id=group['id'],
+                 body=group)
+    es.indices.refresh(index='listing_index')
 
 def poll():
     es = Elasticsearch(['es'])
@@ -17,5 +25,9 @@ def poll():
 
 
 if __name__ == '__main__':
+    print('Sleeping for 15 seconds')
     sleep(15)
+    print('Performing initial migration')
+    initial_migration()
+    print('Listening for new messages')
     poll()

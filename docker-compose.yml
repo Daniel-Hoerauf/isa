@@ -66,8 +66,10 @@ batch:
    links:
      - kafka:kafka
      - es:es
+     - models:models-api
    command: |
      bash -c '
      cd /es;
+     pip install requests;
      python consume.py
      '
