@@ -28,5 +28,5 @@ urlpatterns = [
     url(r'^signup/$', views.create_user, name='signup'),
     # Listings
     url(r'^creategroup/$', views.create_group, name='creategroup'),
-    url(r'^signup/$', views.search, name='search'),
+    url(r'^search/$', views.search, name='search'),
 ]

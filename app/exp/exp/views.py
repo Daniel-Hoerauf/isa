@@ -80,12 +80,10 @@ def create_group(request):
 
 def search(request):
     query = request.GET.get('query')
-    if query is None:
-        return JsonResponse({'empty': True,
-                             'hits': []})
     es = Elasticsearch(['es'])
     search = es.search(index='listing_index',
                        body={'query': {'query_string': {'query': query}},
                              'size': 10})
-    return JsonResponse({'empty': (search['hits']['total'] == 0),
-                         'hits': search['hits']['hits']})
+    hits = [hit['_source'] for hit in search['hits']['hits']]
+    return JsonResponse({'valid': (search['hits']['total'] != 0),
+                         'hits': hits})
