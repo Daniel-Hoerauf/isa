@@ -6,6 +6,7 @@ import requests
 import urllib.request
 import urllib.parse
 import json
+import requests
 
 
 def hello(request):
@@ -24,8 +25,6 @@ def hello(request):
 
     return render(request, 'mainPage.html', {'name': name, 'size': size,
                                              'groupList': groupList})
-    return JsonResponse(resp)
-
 
 def groupDetail(request):
     if request.method == 'GET':
@@ -45,7 +44,6 @@ def groupDetail(request):
 
 def signup(request):
     pass
-    # req = requests.post('http://exp-api:8000/signup', )
 
 def search(request):
     query = request.GET.get('query')
@@ -57,3 +55,37 @@ def search(request):
                                {'query': query.strip()}).json()
         context['searched'] = True
     return render(request, 'search.html', context)
+
+def login(request):
+    context = {}
+    if request.method == 'GET':
+        return render(request, 'login.html', context)
+
+    if request.method == 'POST':
+        data = {}
+        data['username'] = request.POST.get('username', '')
+        data['password'] = request.POST.get('password', '')
+        if data['username'] == '' or data['password'] == '':
+            return render(request, 'login.html', {})
+        resp = requests.post('http://exp-api:8000/login/',data)
+
+        if resp.status_code == 'ok':
+            return hello(request)
+            #save authenticator
+        else:
+            return render(request, 'login.html', {})
+
+def logout(request):
+    data = {}
+    #data['authenticator'] =
+    resp = requests.post('http://exp-api:8000/logout/',data)
+
+def create_group(request):
+    data = {}
+    data['name']='algo midterm'
+    data['size']=4
+    data['description']='last minute'
+
+    context = {}
+    if request.method == 'GET':
+        return render(request, 'newGroup.html', context)

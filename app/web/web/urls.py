@@ -20,8 +20,11 @@ from . import views
 urlpatterns = [
     url(r'^$', views.hello),
     url(r'^admin/', admin.site.urls),
-    url(r'^group/', views.groupDetail, name='detail'),
-    url(r'^signup/', views.signup, name='signup'),
+    url(r'^group/',views.groupDetail, name='detail'),
+    url(r'^signup/',views.signup, name='signup'),
+    url(r'^login/',views.login, name='login'),
+    url(r'^logout/',views.logout, name='logout'),
+    url(r'^newgroup/',views.create_group, name='create_group'),
 
     url(r'search/', views.search, name='search'),
 ]
