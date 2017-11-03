@@ -86,9 +86,6 @@ def signup(request):
     authenticator = resp['authenticator']
     response = HttpResponseRedirect('/')
     response.set_cookie('authenticator', authenticator)
-    
-@csrf_exempt
-    pass
 
 def search(request):
     query = request.GET.get('query')
