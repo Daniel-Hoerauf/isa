@@ -8,8 +8,11 @@
       <div class="row">
 
         <div class="col-lg-3">
-
-          <h1>Groups</h1>
+        {% if logged_in == 1 %}  
+          <h1>Welcome!</h1>
+        {% else %}
+         <h1> Sign in to Join! </h1>
+         {% endif %}
           <div class="list-group">
             <a href="#" class="list-group-item">Location</a>
             <a href="#" class="list-group-item">Subject</a>

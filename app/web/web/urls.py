@@ -1,3 +1,5 @@
+
+
 """web URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -16,13 +18,14 @@ Including another URLconf
 from django.conf.urls import url, include
 #from .views import CreateView
 from django.contrib import admin
+from django.views.decorators.csrf import csrf_exempt
 from . import views
 
 urlpatterns = [
     url(r'^$', views.hello),
     url(r'^admin/', admin.site.urls),
     url(r'^group/',views.groupDetail, name='detail'),
-    url(r'^signup/',views.signup, name='signup'),
+    url(r'^signup/',csrf_exempt(views.signup), name='signup'),
     url(r'^login/',views.login, name='login'),
     url(r'^logout/',views.logout, name='logout'),
     url(r'^newgroup/',views.create_group, name='create_group'),

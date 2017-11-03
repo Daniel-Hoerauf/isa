@@ -7,6 +7,9 @@ from django.shortcuts import get_object_or_404, render
 from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponseRedirect
+
 
 import urllib.request
 import urllib.parse
@@ -17,6 +20,7 @@ import requests
 def hello(request):
     
     #template_name = 'templates/mainPage/mainPage.html'
+    
     req = urllib.request.Request('http://exp-api:8000/group/all')
     resp_json = urllib.request.urlopen(req).read().decode('utf-8')
     resp = json.loads(resp_json)
@@ -28,9 +32,14 @@ def hello(request):
         name.append(i['name'])
         size.append(i['size'])
         gid.append(i['id'])
-    
+    if request.COOKIES.get('authenticator', 'none') == 'none':
+        logged_in = 0
+    else:
+        logged_in = 1
+    #return HttpResponse(logged_in)
+    #return HttpResponse(request.COOKIES.get('authenticator', 'none'))
     #return HttpResponse(groupList)
-    return render(request, 'mainPage.html', {'name':name, 'size':size, 'groupList':groupList})
+    return render(request, 'mainPage.html', {'name':name, 'size':size, 'groupList':groupList, 'logged_in': logged_in})
     #return JsonResponse(resp)
     #return render(request, 'app/mainPage.html')
     
@@ -54,10 +63,32 @@ def groupDetail(request):
      #return HttpResponse(size)
         return render(request, 'group.html', {'group':group})
         #return JsonResponse(resp)
-        
+   
+@csrf_exempt
 def signup(request):
-    req = request.post('http://exp-api:8000/signup', data)
+    context = {}
+    if request.method == 'GET':
+        return render(request, 'signup.html', context)
+    data = {}
+    data['username'] = request.POST.get('username', '')
+    data['password'] = request.POST.get('password', '')
+    data['name'] = request.POST.get('name', '')
+    data['year'] = request.POST.get('year', '')
+    resp = requests.post('http://exp-api:8000/signup/', data)
+    if resp.status_code != 200:
+        return render(request, 'signup.html', context)
+    resp = resp.json()
+    if not resp or resp['status'] != 'ok':
+        return render(request, 'signup.html', {})
+    return HttpResponseRedirect('/')
+    resp = requests.post('http://exp-api:8000/login/',data).json()
+    if not resp or resp['status'] != 'ok':
+        return render(request, 'login.html', {})
+    authenticator = resp['authenticator']
+    response = HttpResponseRedirect('/')
+    response.set_cookie('authenticator', authenticator)
     
+@csrf_exempt
 def login(request):
     context = {}
     if request.method == 'GET':
@@ -69,18 +100,22 @@ def login(request):
         data['password'] = request.POST.get('password', '')
         if data['username'] == '' or data['password'] == '':
             return render(request, 'login.html', {})
-        resp = requests.post('http://exp-api:8000/login/',data)
-        
-        if resp.status_code == 'ok':
-            return hello(request)
-            #save authenticator
-        else:
+        resp = requests.post('http://exp-api:8000/login/',data).json()
+        if not resp or resp['status'] != 'ok':
             return render(request, 'login.html', {})
+        authenticator = resp['authenticator']
+        response = HttpResponseRedirect('/')
+        response.set_cookie('authenticator', authenticator)
+        
+    return response
 
 def logout(request):
     data = {}
-    #data['authenticator'] = 
+    data['authenticator'] = request.COOKIES.get('authenticator')
     resp = requests.post('http://exp-api:8000/logout/',data)
+    response =  HttpResponseRedirect('/')
+    response.delete_cookie('authenticator')
+    return response
     
 def create_group(request):
     data = {}
