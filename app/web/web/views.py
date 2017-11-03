@@ -70,7 +70,7 @@ def login(request):
         if data['username'] == '' or data['password'] == '':
             return render(request, 'login.html', {})
         resp = requests.post('http://exp-api:8000/login/',data)
-        return HttpResponse(resp)
+        
         if resp.status_code == 'ok':
             return hello(request)
             #save authenticator
