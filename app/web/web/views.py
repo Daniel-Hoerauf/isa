@@ -86,9 +86,6 @@ def signup(request):
     authenticator = resp['authenticator']
     response = HttpResponseRedirect('/')
     response.set_cookie('authenticator', authenticator)
-    
-@csrf_exempt
-    pass
 
 def search(request):
     query = request.GET.get('query')
@@ -130,11 +127,22 @@ def logout(request):
     return response
     
 def create_group(request):
-    data = {}
-    data['name']='algo midterm'
-    data['size']=4
-    data['description']='last minute'
-
     context = {}
     if request.method == 'GET':
         return render(request, 'newGroup.html', context)
+
+    if request.method == 'POST':
+        data = {}
+        data['name'] = request.POST.get('name', '')
+        data['size'] = request.POST.get('size', '')
+        data['description'] = request.POST.get('description', '')
+        data['loc'] = request.POST.get('loc', '')
+        #if data['name'] == '' or data['size'] == None or data['description'] == '' or data['loc'] == '':
+            #return render(request, 'newGroup.html', {})
+        resp = requests.post('http://exp-api:8000/creategroup/',data)
+        return HttpResponse(resp)
+        
+        if resp.status_code == 'ok':
+            return hello(request)
+        else:
+            return render(request, 'newGroup.html', {})
