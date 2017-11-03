@@ -32,22 +32,25 @@ def get_group(request, group):
 def create_user(request):
     #data dict is only to be used until web layer is complete
     data = {}
-    data['username'] = 'tester'
+    data['username'] = 'tester22'
     data['name'] = 'brigham'
     data['password'] = 'notpassword'
     data['year'] = 4
     resp = requests.post('http://models-api:8000/get_user_pk/',data)
     if resp.status_code != 404:
-        return JsonResponse({'status':'error'})
+        return JsonResponse({'status':'error, username taken'})
     resp = requests.post('http://models-api:8000/signup/',data).json()
     return JsonResponse(resp)
 
 def login(request):
     data = {}
-    data['username'] = 'tester'
-    data['name'] = 'brigham'
-    data['password'] = 'notpassword'
-    data['year'] = 4
+    #data['username'] = 'tester22'
+    #data['password'] = 'notpassword'
+    password = request.POST.get('password', '')
+    username = request.POST.get('username','')
+    #data = {}
+    data['username'] = username
+    data['password'] = password
     resp = requests.post('http://models-api:8000/get_user_pk/',data)
     if resp.status_code == 404:
         return JsonResponse({'status':'error'})
