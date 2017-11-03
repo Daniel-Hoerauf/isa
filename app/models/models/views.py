@@ -7,8 +7,6 @@ from django.contrib.auth.hashers import make_password, check_password
 from .models import Location, Student, Group, User, Authenticator
 from .models import create_authenticator, clean_authenticators
 
-
-
 def index(request):
     return render(request, 'models.html')
 
@@ -243,12 +241,12 @@ def untag_group(request, group):
 
 
 @require_POST
-def validate(request, user):
+def validate(request):
     auth = request.POST.get('authenticator', '')
     authenticator = get_object_or_404(Authenticator, pk=auth)
-    valid = str(user) == str(authenticator.user_id.pk)
+    # valid = str(user) == str(authenticator.user_id.pk)
     return JsonResponse({'status': 'ok',
-                         'authenticated': valid})
+                         'authenticated': True})
 
 
 @require_POST
@@ -262,13 +260,11 @@ def create_user(request):
                              'authenticated': False,
                              'authenticator': None,
                              'message': 'Must have username, password, name, year'})
-
     student = Student.create(name, year)
     student.save()
     pass_hash = make_password(password)
     user = User(student=student, username=username, password=pass_hash)
     user.save()
-
     authenticator = create_authenticator(user)
     return JsonResponse({'status': 'ok',
                          'authenticated': True,
@@ -295,3 +291,10 @@ def logout(request):
     authenticator.delete()
     clean_authenticators()
     return JsonResponse({'status': 'ok'})
+
+@require_POST
+def get_user_pk(request):
+    username = request.POST.get('username')
+    user = get_object_or_404(User, username=username)
+    return JsonResponse({'status': 'ok',
+                         'user': user.pk})

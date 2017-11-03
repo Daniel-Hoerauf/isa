@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create a Group</title>
+</head>
+<body>
+    <form method="POST">
+        {% csrf_token %}
+        <p>
+            <label>Name</label>
+            <input type="text" name="name">
+        </p>
+        <p>
+            <label>Location</label>
+            <input type="text" name="location">
+        </p>
+        <p>
+            <label>Size</label>
+            <input type="number" name="size">
+        </p>
+        <p>
+            <label>Description</label>
+            <input type="text" name="description">
+        </p>
+        <button type="submit">Create Group</button>
+    </form>
+</body>
+</html>

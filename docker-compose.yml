@@ -1,3 +1,16 @@
+kafka:
+   image: spotify/kafka
+   container_name: kafka
+   environment:
+      ADVERTISED_HOST: kafka
+      ADVERTISED_PORT: 9092
+   hostname: kafka
+
+es:
+   image: elasticsearch:2.0
+   container_name: es
+   ports:
+      - "9200:9200"
 models:
    image: tp33/django
    external_links:
@@ -19,6 +32,8 @@ exp:
    image: tp33/django
    links:
       - models:models-api
+      - kafka:kafka
+      - es:es
    ports:
       - "8002:8000"
    volumes:
@@ -26,7 +41,7 @@ exp:
    command: |
       bash -c '
       cd /app/exp;
-      mod_wsgi-express start-server --working-directory /app/exp --reload-on-changes exp/wsgi.py
+      pip3 install requests && mod_wsgi-express start-server --working-directory /app/exp --reload-on-changes exp/wsgi.py
       '
 
 web:
@@ -40,5 +55,21 @@ web:
    command: |
       bash -c '
       cd /app/web;
-      mod_wsgi-express start-server --working-directory /app/web --reload-on-changes web/wsgi.py
+      pip3 install requests && mod_wsgi-express start-server --url-alias /static static --working-directory /app/web --reload-on-changes web/wsgi.py
       '
+
+batch:
+   image: tp33/django
+   container_name: batch
+   volumes:
+     - ./es:/es
+   links:
+     - kafka:kafka
+     - es:es
+     - models:models-api
+   command: |
+     bash -c '
+     cd /es;
+     pip install requests;
+     python consume.py
+     '
