@@ -1,2 +1,2 @@
 # isa
-Travis Badge: [![Build Status]
+Travis Badge: [![Build Status]]
