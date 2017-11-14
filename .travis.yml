@@ -1,0 +1,16 @@
+language: python
+
+python:
+  - "3.5"
+
+install:
+  - pip install -q Django==1.11.6
+  - pip install django-formtools
+
+before_script:
+  - "mysql -u root -e 'create database test_cs4501;'"
+  - "mysql -u root -e \"grant all on test_cs4501.* to 'www'@'%';\""
+
+script: python app/models/models/manage.py test
+
+sudo: false
