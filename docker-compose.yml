@@ -73,3 +73,11 @@ batch:
      pip install requests;
      python consume.py
      '
+
+selenium-chrome:
+   image: selenium/standalone-chrome
+   container_name: selenium-chrome
+   links:
+     - web:web
+   ports:
+     - "4444:4444"
