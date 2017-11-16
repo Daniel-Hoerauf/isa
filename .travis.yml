@@ -13,7 +13,8 @@ install:
 before_script:
   - docker pull tp33/django
   - docker pull mysql:5.7.14
-  - docker ps -a
+  - docker-compose up
+  - docker exec -it models bash
   - mysql -uroot -p'$3cureUS' -h db
   - create user 'www'@'%' identified by '$3cureUS';
   - create database cs4501 character set utf8;
