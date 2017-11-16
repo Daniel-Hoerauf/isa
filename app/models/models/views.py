@@ -166,7 +166,13 @@ def create_group(request):
         return JsonResponse({'status': 'bad request'})
     group = Group.create(name, size, description)
     group.save()
-    return JsonResponse({'status': 'ok'})
+    resp = {'status': 'ok', 'group': {
+        'id': group.pk,
+        'name': group.name,
+        'size': group.size,
+        'description': group.description,
+    }}
+    return JsonResponse(resp)
 
 
 def get_group(request, group):

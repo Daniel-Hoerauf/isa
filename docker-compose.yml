@@ -1,5 +1,12 @@
 version: '2'
 services:
+  redis:
+    image: redis
+    container_name: redis
+    network_mode: "bridge"
+    ports:
+      - "6379:6379"
+
   kafka:
      image: spotify/kafka
      container_name: kafka
@@ -40,6 +47,7 @@ services:
         - models:models-api
         - kafka:kafka
         - es:es
+        - redis:redis
      ports:
         - "8002:8000"
      volumes:
@@ -47,7 +55,9 @@ services:
      command: |
         bash -c '
         cd /app/exp;
-        pip3 install requests && mod_wsgi-express start-server --working-directory /app/exp --reload-on-changes exp/wsgi.py
+        pip install requests;
+        pip install redis;
+        mod_wsgi-express start-server --working-directory /app/exp --reload-on-changes exp/wsgi.py
         '
   
   web:
