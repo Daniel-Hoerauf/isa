@@ -51,4 +51,5 @@ urlpatterns = [
         views.tag_group, name='tag_group'),
     url(r'group/(?P<group>[0-9]+)/untag/',
         views.untag_group, name='untag_group'),
+    url(r'^get_group_pk/$', views.get_group, name='get_group_pk'),
 ]

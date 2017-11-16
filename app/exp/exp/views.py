@@ -77,18 +77,20 @@ def create_group(request):
     #data['name'] = 'algo midterm'
     #data['size'] = 4
     #data['description'] = 'last minute'
-    
+
     data['name'] = request.POST.get('name', '')
     data['size'] = request.POST.get('size', '')
     data['description'] = request.POST.get('description', '')
     data['loc'] = request.POST.get('loc', '')
-    
+
     # Add to kafka
     producer = KafkaProducer(bootstrap_servers='kafka:9092')
-    some_new_group = {'name': data['name'], 'size': data['size'], 'description': data['description']}
-    producer.send('new-listing-topic', json.dumps(some_new_group).encode('utf-8'))
-
     resp = requests.post('http://models-api:8000/group/new/', data).json()
+    #dataPk = requests.post('http://models-api:8000/get_group_pk/', data).json())
+    some_new_group = {'name': data['name'], 'size': data['size'], 'description': data['description'], 'id':data['id']}
+    producer.send('new-listings-topic', json.dumps(some_new_group).encode('utf-8'))
+
+    #resp = requests.post('http://models-api:8000/group/new/', data).json()
     return JsonResponse(resp)
 
 @csrf_exempt
