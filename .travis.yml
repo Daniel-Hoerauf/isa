@@ -13,7 +13,7 @@ install:
 before_script:
   - docker pull tp33/django
   - docker pull mysql:5.7.14
-  - docker start mysql
+  - docker run --name mysql -d -e MYSQL\_ROOT\_PASSWORD='$3cureUS' -v ~/cs4501/db:/var/lib/mysql  mysql:5.7.14
   - docker-compose up
   - docker exec -it models bash
   - mysql -uroot -p'$3cureUS' -h db
