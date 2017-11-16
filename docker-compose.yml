@@ -7,10 +7,12 @@ services:
         ADVERTISED_HOST: kafka
         ADVERTISED_PORT: 9092
      hostname: kafka
+     network_mode: "bridge"
   
   es:
      image: elasticsearch:2.0
      container_name: es
+     network_mode: "bridge"
      ports:
         - "9200:9200"
   models:
@@ -21,6 +23,7 @@ services:
         - "8001:8000"
      volumes:
         - ./app:/app
+     network_mode: "bridge"
      command: |
         bash -c '
         cd /app/models;
@@ -32,6 +35,7 @@ services:
   
   exp:
      image: tp33/django
+     network_mode: "bridge"
      links:
         - models:models-api
         - kafka:kafka
@@ -48,6 +52,7 @@ services:
   
   web:
      image: tp33/django
+     network_mode: "bridge"
      links:
         - exp:exp-api
      ports:
@@ -66,6 +71,7 @@ services:
   batch:
      image: tp33/django
      container_name: batch
+     network_mode: "bridge"
      volumes:
        - ./es:/es
      links:
@@ -79,10 +85,12 @@ services:
        python consume.py
        '
   lb:
-    image: dockercloud/haproxy
-    links:
-      - web
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - 80:80
+     image: dockercloud/haproxy
+     network_mode: "bridge"
+     links:
+       - web
+     volumes:
+       - /var/run/docker.sock:/var/run/docker.sock
+     ports:
+       - 8000:80
+
