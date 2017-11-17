@@ -10,3 +10,7 @@ WebDriver driver = new ChromeDriver()
 driver.get("http://localhost:8000/newgroup/")
 
 print driver.title
+print driver.find_element_by_name("Name")
+print driver.find_element_by_name("Location")
+print driver.find_element_by_name("Size")
+print driver.find_element_by_name("Description")

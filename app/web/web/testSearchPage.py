@@ -10,3 +10,5 @@ WebDriver driver = new ChromeDriver()
 driver.get("http://localhost:8000/search/")
 
 print driver.title
+
+print driver.find_element_by_name("Search")

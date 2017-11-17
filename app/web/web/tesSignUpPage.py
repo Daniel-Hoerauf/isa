@@ -10,3 +10,6 @@ WebDriver driver = new ChromeDriver()
 driver.get("http://localhost:8000/signup/")
 
 print driver.title
+
+print driver.find_element_by_name("Username")
+print driver.find_element_by_name("Name")
