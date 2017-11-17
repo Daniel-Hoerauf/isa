@@ -17,15 +17,17 @@ before_script:
   - docker run --name mysql -d -e MYSQL\_ROOT\_PASSWORD='$3cureUS' -v ~/cs4501/db:/var/lib/mysql  mysql:5.7.14
   - docker ps -a
   - docker run -it --name mysql-cmdline --link db mysql:5.7.14 bash -c "mysql -uroot -p'\$3cureUS' -h db"
+  - docker exec -it mysql-cmdline bash -c "mysql -u root -e 'create database test_cs4501;'"
+  - docker exec -it mysql-cmdline bash -c "mysql -u root -e \"grant all on test_cs4501.* to 'www'@'%';\"
   #- docker-compose -f docker-compose-test.yml up
   #- docker exec -it models_1 bash
 #  - mysql -uroot -p'$3cureUS' -h db
-  - create user 'www'@'%' identified by '$3cureUS';
+  #- create user 'www'@'%' identified by '$3cureUS';
   #- create database cs4501 character set utf8;
   #- grant all on cs4501.* to 'www'@'%';
   #- exit;
-  - "mysql -u root -e 'create database test_cs4501;'"
-  - "mysql -u root -e \"grant all on test_cs4501.* to 'www'@'%';\""
+  #- "mysql -u root -e 'create database test_cs4501;'"
+  #- "mysql -u root -e \"grant all on test_cs4501.* to 'www'@'%';\""
 
 #script: python app/models/models/manage.py test
 script: docker-compose -f docker-compose-test.yml up
