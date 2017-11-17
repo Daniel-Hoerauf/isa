@@ -17,7 +17,7 @@ before_script:
   - docker run --name mysql -d -e MYSQL\_ROOT\_PASSWORD='$3cureUS' -v ~/cs4501/db:/var/lib/mysql  mysql:5.7.14
   - docker ps -a
   - sleep 10
-  - docker run -it --name mysql-cmdline --rm --link mysql:db mysql:5.7.14 bash -c "mysql -uroot -p'/$3cureUS' -h db -v -e "create database test_cs4501 character set utf8; create user 'www'@'%' identified by '/$3cureUS'; grant all privileges on *.* to 'www'@'%'; drop database test_cs4501;""
+  - docker run -it --name mysql-cmdline --rm --link mysql:db mysql:5.7.14 bash -c "mysql -uroot -p'$3cureUS' -h db -v -e "create database test_cs4501 character set utf8; create user 'www'@'%' identified by '$3cureUS'; grant all privileges on *.* to 'www'@'%'; drop database test_cs4501;""
   - docker start mysql
   #- cd ..
   #- docker-compose up -d
