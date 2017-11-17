@@ -11,7 +11,7 @@ install:
   - pip install django-formtools
 
 before_script:
-  - mk
+  - mkdir ~/db
   - docker pull tp33/django
   - docker pull mysql:5.7.14
   - docker run --name mysql -d -e MYSQL\_ROOT\_PASSWORD='$3cureUS' -v ~/cs4501/db:/var/lib/mysql  mysql:5.7.14
