@@ -11,10 +11,11 @@ install:
   - pip install django-formtools
 
 before_script:
+  - mk
   - docker pull tp33/django
   - docker pull mysql:5.7.14
   - docker run --name mysql -d -e MYSQL\_ROOT\_PASSWORD='$3cureUS' -v ~/cs4501/db:/var/lib/mysql  mysql:5.7.14
-  - docker run -it --name mysql-cmdline --link mysql:db mysql:5.7.14 bash
+  - docker run -it --name mysql-cmdline --link mysql:db mysql:5.7.14 bash -c "mysql -uroot -p'$3cureUS' -h db"
   #- docker-compose -f docker-compose-test.yml up
   #- docker exec -it models_1 bash
   - mysql -uroot -p'$3cureUS' -h db
