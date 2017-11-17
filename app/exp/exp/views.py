@@ -93,7 +93,7 @@ def create_group(request):
     r.delete('all')
     # Add to kafka
     producer = KafkaProducer(bootstrap_servers='kafka:9092')
-    producer.send('new-listings-topic', resp)
+    producer.send('new-listings-topic', json.dumps(resp['group']).encode('utf-8'))
 
     return JsonResponse(resp)
 

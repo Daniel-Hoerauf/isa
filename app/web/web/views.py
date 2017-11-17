@@ -16,9 +16,9 @@ import requests
 
 
 def hello(request):
-    
+
     #template_name = 'templates/mainPage/mainPage.html'
-    
+
     req = urllib.request.Request('http://exp-api:8000/group/all')
     resp_json = urllib.request.urlopen(req).read().decode('utf-8')
     resp = json.loads(resp_json)
@@ -40,7 +40,7 @@ def hello(request):
     return render(request, 'mainPage.html', {'name':name, 'size':size, 'groupList':groupList, 'logged_in': logged_in})
     #return JsonResponse(resp)
     #return render(request, 'app/mainPage.html')
-    
+
 
     return render(request, 'mainPage.html', {'name': name, 'size': size,
                                              'groupList': groupList})
@@ -115,17 +115,17 @@ def login(request):
         authenticator = resp['authenticator']
         response = HttpResponseRedirect('/')
         response.set_cookie('authenticator', authenticator)
-        
+
     return response
 
 def logout(request):
     data = {}
     data['authenticator'] = request.COOKIES.get('authenticator')
-    resp = requests.post('http://exp-api:8000/logout/',data)
-    response =  HttpResponseRedirect('/')
+    resp = requests.post('http://exp-api:8000/logout/', data)
+    response = HttpResponseRedirect('/')
     response.delete_cookie('authenticator')
     return response
-    
+
 def create_group(request):
     context = {}
     if request.method == 'GET':
@@ -137,11 +137,10 @@ def create_group(request):
         data['size'] = request.POST.get('size', '')
         data['description'] = request.POST.get('description', '')
         data['loc'] = request.POST.get('loc', '')
-        if data['name'] == '' or data['size'] == None or data['description'] == '':
+        if data['name'] == '' or data['size'] == '' or data['description'] == '':
             return render(request, 'newGroup.html', {})
-        resp = requests.post('http://exp-api:8000/creategroup/',data).json()
-        #return HttpResponse(resp)
-        
+        resp = requests.post('http://exp-api:8000/creategroup/', data).json()
+
         if resp['status'] == 'ok':
             response = HttpResponseRedirect('/')
         else:
