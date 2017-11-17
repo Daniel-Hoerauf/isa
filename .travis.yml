@@ -18,7 +18,7 @@ before_script:
   - docker run -it --name mysql-cmdline --link mysql:db mysql:5.7.14 bash -c "mysql -uroot -p'$3cureUS' -h db"
   #- docker-compose -f docker-compose-test.yml up
   #- docker exec -it models_1 bash
-  - mysql -uroot -p'$3cureUS' -h db
+#  - mysql -uroot -p'$3cureUS' -h db
   - create user 'www'@'%' identified by '$3cureUS';
   #- create database cs4501 character set utf8;
   #- grant all on cs4501.* to 'www'@'%';
