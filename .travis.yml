@@ -11,20 +11,28 @@ install:
   - pip install django-formtools
 
 before_script:
+  - mkdir ~/db
   - docker pull tp33/django
   - docker pull mysql:5.7.14
   - docker run --name mysql -d -e MYSQL\_ROOT\_PASSWORD='$3cureUS' -v ~/cs4501/db:/var/lib/mysql  mysql:5.7.14
-  - docker-compose -f docker-compose-test.yml up
-  - docker exec -it models_1 bash
-  - mysql -uroot -p'$3cureUS' -h db
-  - create user 'www'@'%' identified by '$3cureUS';
-  - create database cs4501 character set utf8;
-  - grant all on cs4501.* to 'www'@'%';
-  - exit;
+  - sleep 10
+  - docker start mysql
+  - docker run -it --name mysql-cmdline --rm --link mysql:db mysql:5.7.14 mysql -uroot -p'$3cureUS' -h db -v -e "create database test_cs4501 character set utf8; create user 'www'@'%' identified by '\$3cureUS'; grant all privileges on *.* to 'www'@'%'; drop database test_cs4501;"
+
+  #- cd ..
+  #- docker-compose up -d
+  #- docker-compose -f docker-compose-test.yml up
+  #- docker exec -it models_1 bash
+#  - mysql -uroot -p'$3cureUS' -h db
+  #- create user 'www'@'%' identified by '$3cureUS';
+  #- create database cs4501 character set utf8;
+  #- grant all on cs4501.* to 'www'@'%';
+  #- exit;
   #- "mysql -u root -e 'create database test_cs4501;'"
   #- "mysql -u root -e \"grant all on test_cs4501.* to 'www'@'%';\""
 
-script: python app/models/models/manage.py test
+#script: python app/models/models/manage.py test
+script: docker-compose -f docker-compose-test.yml up
 
 after_script:
   - docker-compose down
