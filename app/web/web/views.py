@@ -79,13 +79,13 @@ def signup(request):
     resp = resp.json()
     if not resp or resp['status'] != 'ok':
         return render(request, 'signup.html', {})
-    return HttpResponseRedirect('/')
     resp = requests.post('http://exp-api:8000/login/',data).json()
     if not resp or resp['status'] != 'ok':
         return render(request, 'login.html', {})
     authenticator = resp['authenticator']
     response = HttpResponseRedirect('/')
     response.set_cookie('authenticator', authenticator)
+    return response
 
 def search(request):
     query = request.GET.get('query')
@@ -101,21 +101,24 @@ def search(request):
 def login(request):
     context = {}
     if request.method == 'GET':
+        if request.COOKIES.get('authenticator') != None:
+            return HttpResponseRedirect('/')
         return render(request, 'login.html', context)
 
     if request.method == 'POST':
+        if request.COOKIES.get('authenticator') != None:
+            return HttpResponseRedirect('/')
         data = {}
         data['username'] = request.POST.get('username', '')
         data['password'] = request.POST.get('password', '')
         if data['username'] == '' or data['password'] == '':
             return render(request, 'login.html', {})
         resp = requests.post('http://exp-api:8000/login/',data).json()
-        if not resp or resp['status'] != 'ok':
+        if not resp or resp['authenticated'] != True:
             return render(request, 'login.html', {})
         authenticator = resp['authenticator']
         response = HttpResponseRedirect('/')
         response.set_cookie('authenticator', authenticator)
-
     return response
 
 def logout(request):
@@ -126,9 +129,18 @@ def logout(request):
     response.delete_cookie('authenticator')
     return response
 
+
 def create_group(request):
     context = {}
     if request.method == 'GET':
+        data = {}
+        authenticator = request.COOKIES.get('authenticator')
+        if authenticator == None:
+            return HttpResponseRedirect('/')
+        data['authenticator'] = authenticator
+        resp = requests.post('http://exp-api:8000/validate/', data).json()
+        if resp['status'] == 'error':
+            return HttpResponseRedirect('/')
         return render(request, 'newGroup.html', context)
 
     if request.method == 'POST':

@@ -2,7 +2,7 @@ from django import forms
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='username', max_length=100)
-    password = forms.
+    password = forms.CharField(widget=forms.PasswordInput)
 
 class NewGroupForm(forms.Form):
     name = forms.CharField(max_length=100)

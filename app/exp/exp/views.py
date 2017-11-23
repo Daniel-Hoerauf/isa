@@ -107,3 +107,11 @@ def search(request):
     hits = [hit['_source'] for hit in search['hits']['hits']]
     return JsonResponse({'valid': (search['hits']['total'] != 0),
                          'hits': hits})
+@csrf_exempt
+def validate(request):
+    data = {}
+    data['authenticator'] = request.POST.get('authenticator')
+    resp = requests.post('http://models-api:8000/validate/', data)
+    if resp.status_code == 404:
+        return JsonResponse({'status': 'error'})
+    return JsonResponse(resp.json())
