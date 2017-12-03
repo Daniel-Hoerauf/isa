@@ -7,6 +7,8 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
+from .forms import SignupForm, LoginForm, NewGroupForm
+from django.contrib import messages
 
 
 import urllib.request
@@ -66,26 +68,31 @@ def groupDetail(request):
         #return JsonResponse(resp)
 def signup(request):
     context = {}
+    form = SignupForm
     if request.method == 'GET':
-        return render(request, 'signup.html', context)
+        #return render(request, 'signup.html', context)
+        return render(request, 'signup.html', {'form':form})
     data = {}
     data['username'] = request.POST.get('username', '')
     data['password'] = request.POST.get('password', '')
     data['name'] = request.POST.get('name', '')
     data['year'] = request.POST.get('year', '')
+
     resp = requests.post('http://exp-api:8000/signup/', data)
     if resp.status_code != 200:
-        return render(request, 'signup.html', context)
+        return render(request, 'signup.html', {'form':form})
     resp = resp.json()
     if not resp or resp['status'] != 'ok':
-        return render(request, 'signup.html', {})
-    return HttpResponseRedirect('/')
+        if resp['status'] == 'error':
+            messages.add_message(request, messages.INFO, 'Username already exists')
+        return render(request, 'signup.html', {'form':form})
     resp = requests.post('http://exp-api:8000/login/',data).json()
     if not resp or resp['status'] != 'ok':
         return render(request, 'login.html', {})
     authenticator = resp['authenticator']
     response = HttpResponseRedirect('/')
     response.set_cookie('authenticator', authenticator)
+    return response
 
 def search(request):
     query = request.GET.get('query')
@@ -100,22 +107,27 @@ def search(request):
 
 def login(request):
     context = {}
+    form = LoginForm
     if request.method == 'GET':
-        return render(request, 'login.html', context)
+        if request.COOKIES.get('authenticator') != None:
+            return HttpResponseRedirect('/')
+        return render(request, 'login.html', {'form':form})
 
     if request.method == 'POST':
+        if request.COOKIES.get('authenticator') != None:
+            return HttpResponseRedirect('/')
         data = {}
         data['username'] = request.POST.get('username', '')
         data['password'] = request.POST.get('password', '')
         if data['username'] == '' or data['password'] == '':
-            return render(request, 'login.html', {})
+            return render(request, 'login.html', {'form':form})
         resp = requests.post('http://exp-api:8000/login/',data).json()
-        if not resp or resp['status'] != 'ok':
-            return render(request, 'login.html', {})
+        if not resp or resp['authenticated'] != True:
+            messages.add_message(request, messages.INFO, 'Login failed, please enter correct login info')
+            return render(request, 'login.html', {'form':form})
         authenticator = resp['authenticator']
         response = HttpResponseRedirect('/')
         response.set_cookie('authenticator', authenticator)
-
     return response
 
 def logout(request):
@@ -126,10 +138,20 @@ def logout(request):
     response.delete_cookie('authenticator')
     return response
 
+
 def create_group(request):
     context = {}
+    form = NewGroupForm
     if request.method == 'GET':
-        return render(request, 'newGroup.html', context)
+        data = {}
+        authenticator = request.COOKIES.get('authenticator')
+        if authenticator == None:
+            return HttpResponseRedirect('/')
+        data['authenticator'] = authenticator
+        resp = requests.post('http://exp-api:8000/validate/', data).json()
+        if resp['status'] == 'error':
+            return HttpResponseRedirect('/')
+        return render(request, 'newGroup.html', {'form':form})
 
     if request.method == 'POST':
         data = {}
@@ -138,7 +160,7 @@ def create_group(request):
         data['description'] = request.POST.get('description', '')
         data['loc'] = request.POST.get('loc', '')
         if data['name'] == '' or data['size'] == '' or data['description'] == '':
-            return render(request, 'newGroup.html', {})
+            return render(request, 'newGroup.html', {'form':form})
         resp = requests.post('http://exp-api:8000/creategroup/', data).json()
 
         if resp['status'] == 'ok':
