@@ -1,5 +1,55 @@
 version: '2'
 services:
+  spark-master:
+    image: gettyimages/spark
+    command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
+    container_name: spark-master
+    hostname: spark-master
+    environment:
+      MASTER: spark://spark-master:7077
+      SPARK_CONF_DIR: /conf
+    expose:
+      - 7001
+      - 7002
+      - 7003
+      - 7004
+      - 7005
+      - 7006
+      - 7077
+      - 6066
+    ports:
+      - 4040:4040
+      - 6066:6066
+      - 7077:7077
+      - 8080:8080
+    volumes:
+      - ./data:/data
+
+  spark-worker:
+    image: gettyimages/spark
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    container_name: spark-worker
+    hostname: spark-worker
+    environment:
+      SPARK_CONF_DIR: /conf
+      SPARK_WORKER_CORES: 2
+      SPARK_WORKER_MEMORY: 512m
+      SPARK_WORKER_PORT: 8881
+      SPARK_WORKER_WEBUI_PORT: 8081
+    links:
+      - spark-master
+    expose:
+      - 7012
+      - 7013
+      - 7014
+      - 7015
+      - 7016
+      - 8881
+    ports:
+      - 8081:8081
+    volumes:
+      - ./data:/data
+
   redis:
     image: redis
     container_name: redis
@@ -15,7 +65,7 @@ services:
         ADVERTISED_PORT: 9092
      hostname: kafka
      network_mode: "bridge"
-  
+
   es:
      image: elasticsearch:2.0
      container_name: es
@@ -39,7 +89,7 @@ services:
         python manage.py loaddata initial;
         mod_wsgi-express start-server --working-directory /app/models --reload-on-changes models/wsgi.py
         '
-  
+
   exp:
      image: tp33/django
      network_mode: "bridge"
@@ -59,7 +109,7 @@ services:
         pip install redis;
         mod_wsgi-express start-server --working-directory /app/exp --reload-on-changes exp/wsgi.py
         '
-  
+
   web:
      image: tp33/django
      network_mode: "bridge"
@@ -77,7 +127,7 @@ services:
         cd /app/web;
         pip3 install requests && mod_wsgi-express start-server --url-alias /static static --working-directory /app/web --reload-on-changes web/wsgi.py
         '
-  
+
   batch:
      image: tp33/django
      container_name: batch
@@ -103,4 +153,3 @@ services:
        - /var/run/docker.sock:/var/run/docker.sock
      ports:
        - 8000:80
-
