@@ -128,6 +128,19 @@ services:
         pip3 install requests && mod_wsgi-express start-server --url-alias /static static --working-directory /app/web --reload-on-changes web/wsgi.py
         '
 
+  log:
+     image: tp33/django
+     container_name: log
+     network_mode: "bridge"
+     volumes:
+       - ./es:/es
+       - ./data:/data
+     links:
+       - kafka:kafka
+     command: |
+       bash -c '
+       python /es/logAccess.py
+       '
   batch:
      image: tp33/django
      container_name: batch

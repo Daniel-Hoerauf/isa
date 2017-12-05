@@ -52,20 +52,13 @@ def groupDetail(request):
         gid = request.GET.get('id')
         if gid is None:
             return HttpResponse("error")
-        req = urllib.request.Request('http://exp-api:8000/group/all')
-        resp_json = urllib.request.urlopen(req).read().decode('utf-8')
-        resp = json.loads(resp_json)
-        groups = resp['groups']
-        group = groups
-        for i in groups:
-            if i['id'] == int(gid):
-                group = i
-                break
-     #print(resp)
-     #return HttpResponse('Hello group page\n')
-     #return HttpResponse(size)
-        return render(request, 'group.html', {'group':group})
-        #return JsonResponse(resp)
+        data = {}
+        data['authenticator'] = request.COOKIES.get('authenticator')
+        resp = requests.post('http://exp-api:8000/group/{}/'.format(gid),
+                             data).json()
+        return render(request, 'group.html', resp)
+
+
 def signup(request):
     context = {}
     form = SignupForm

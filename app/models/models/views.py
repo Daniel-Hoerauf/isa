@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.hashers import make_password, check_password
 
@@ -304,3 +304,10 @@ def get_user_pk(request):
     user = get_object_or_404(User, username=username)
     return JsonResponse({'status': 'ok',
                          'user': user.pk})
+
+@require_POST
+def get_user_from_authenticator(request):
+    auth = request.POST.get('authenticator')
+    authenticator = get_object_or_404(Authenticator, pk=auth)
+    return JsonResponse({'status': 'ok',
+                         'user': authenticator.user_id.pk})

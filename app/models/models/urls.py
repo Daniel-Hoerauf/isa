@@ -11,6 +11,8 @@ urlpatterns = [
     url(r'^signup/$', views.create_user, name='signup'),
     url(r'^validate/$', views.validate, name='validate'),
     url(r'^get_user_pk/$', views.get_user_pk, name='get_user_pk'),
+    url(r'^get_user_from_authenticator/$', views.get_user_from_authenticator,
+        name='get_user_from_authenticator'),
 
     # Location endpoints
     url(r'^location/all/$', views.location_index, name='location_index'),

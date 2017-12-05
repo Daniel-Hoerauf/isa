@@ -12,16 +12,6 @@ from django.views.decorators.csrf import csrf_exempt
 def hello(request):
     return render(request, 'exp.html')
 
-def group(request):
-    r = StrictRedis(host='redis', port=6379, db=0)
-    if r.get('all') is not None:
-        return JsonResponse(json.loads(r.get('all').decode('utf-8')))
-    req = urllib.request.Request('http://models-api:8000/group/all')
-    resp_json = urllib.request.urlopen(req).read().decode('utf-8')
-    resp = json.loads(resp_json)
-    r.set('all', resp)
-    return JsonResponse(resp)
-
 def group_index(request):
     r = StrictRedis(host='redis', port=6379, db=0)
     if r.get('all') is not None:
@@ -32,14 +22,23 @@ def group_index(request):
     resp = json.loads(resp_json)
     return JsonResponse(resp)
 
+@csrf_exempt
 def get_group(request, group):
+    # Add to kafka
+    user = requests.post('http://models-api:8000/get_user_from_authenticator/',
+                         {'authenticator': request.POST.get('authenticator')}).json()['user']
+    producer = KafkaProducer(bootstrap_servers='kafka:9092')
+    producer.send('recommendations-topic', json.dumps({'user': user,
+                                                       'group': group}
+                                                      ).encode('utf-8'))
+
     r = StrictRedis(host='redis', port=6379, db=0)
     if r.get(group) is not None:
         return JsonResponse(json.loads(r.get(group).decode('utf-8')))
-    req = urllib.request.Request('http://models-api:8000/group/1')
+    req = urllib.request.Request('http://models-api:8000/group/{}'.format(group))
     resp_json = urllib.request.urlopen(req).read().decode('utf-8')
     resp = json.loads(resp_json)
-    r.set(group, resp)
+    r.set(group, resp_json)
     return JsonResponse(resp)
 
 @csrf_exempt
