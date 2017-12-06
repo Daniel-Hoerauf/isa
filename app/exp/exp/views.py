@@ -55,6 +55,8 @@ def create_user(request):
     return JsonResponse(resp)
 
 @csrf_exempt
+
+
 def login(request):
     data = {}
     data['username'] = request.POST.get('username', '')
