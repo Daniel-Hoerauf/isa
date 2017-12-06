@@ -24,12 +24,8 @@ def group_index(request):
 
 
 def recommendation(request):
-    r = StrictRedis(host='redis', port=6379, db=0)
-    if r.get('all') is not None:
-        return JsonResponse(json.loads(r.get('all').decode('utf-8')))
     req = urllib.request.Request('http://models-api:8000/recommendation/all')
     resp_json = urllib.request.urlopen(req).read().decode('utf-8')
-    r.set('all', resp_json)
     resp = json.loads(resp_json)
     return JsonResponse(resp)
 
@@ -46,6 +42,8 @@ def get_group(request, group):
     r = StrictRedis(host='redis', port=6379, db=0)
     if r.get(group) is not None:
         return JsonResponse(json.loads(r.get(group).decode('utf-8')))
+    reco = urllib.request.Request('http://models-api:8000/recommendation/all')
+    reco_json = urllib.request.urlopen(req).read().decode('utf-8')
     req = urllib.request.Request('http://models-api:8000/group/{}'.format(group))
     resp_json = urllib.request.urlopen(req).read().decode('utf-8')
     resp = json.loads(resp_json)

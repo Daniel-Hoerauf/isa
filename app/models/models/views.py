@@ -160,8 +160,8 @@ def recommendation(request):
     resp = {'status': 'ok', 'recs': []}
     for rec in Recommendation.objects.all():
         resp['recs'].append({
-            'group_id': rec.pk,
-            'recommended_groups': rec.grp,
+            'group_id': rec.group_id,
+            'recommended_groups': rec.recommended_groups,
         })
     return JsonResponse(resp)
 
@@ -186,12 +186,24 @@ def create_group(request):
 
 def get_group(request, group):
     group = get_object_or_404(Group, pk=group)
-    resp = {'status': 'ok', 'group': {
-        'id': group.pk,
-        'name': group.name,
-        'size': group.size,
-        'description': group.description,
-    }}
+    try:
+        rec = Recommendation.objects.get(group_id=group.pk)
+    except Recommendation.DoesNotExist:
+        rec = None
+    if rec != None:
+        resp = {'status': 'ok', 'recommendation': rec.recommended_groups, 'group': {
+            'id': group.pk,
+            'name': group.name,
+            'size': group.size,
+            'description': group.description,
+        }}
+    else:
+        resp = {'status': 'ok', 'recommendation': 'None', 'group': {
+            'id': group.pk,
+            'name': group.name,
+            'size': group.size,
+            'description': group.description,
+        }}
     return JsonResponse(resp)
 
 

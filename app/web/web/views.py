@@ -56,10 +56,7 @@ def groupDetail(request):
         data['authenticator'] = request.COOKIES.get('authenticator')
         group = requests.post('http://exp-api:8000/group/{}/'.format(gid),
                              data).json()
-        #reco = urllib.request.Request('http://exp-api:8000/recommendation/all')
-        #resp_json = urllib.request.urlopen(reco).read().decode('utf-8')
-        #resp = json.loads(resp_json)
-        #rec = resp['recs']
+        #reco = requests.post('http://exp-api:8000/recommendation/all').json()
         return render(request, 'group.html', group)
 
 
