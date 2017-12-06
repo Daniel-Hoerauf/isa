@@ -4,7 +4,7 @@ from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.hashers import make_password, check_password
 
-from .models import Location, Student, Group, User, Authenticator
+from .models import Location, Student, Group, User, Authenticator, Recommendation
 from .models import create_authenticator, clean_authenticators
 
 def index(request):
@@ -153,6 +153,15 @@ def group_index(request):
             'name': grp.name,
             'size': grp.size,
             'description': grp.description,
+        })
+    return JsonResponse(resp)
+
+def recommendation(request):
+    resp = {'status': 'ok', 'recs': []}
+    for rec in Recommendation.objects.all():
+        resp['recs'].append({
+            'group_id': rec.pk,
+            'recommended_groups': rec.grp,
         })
     return JsonResponse(resp)
 
