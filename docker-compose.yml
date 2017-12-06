@@ -3,8 +3,10 @@ services:
   spark-master:
     image: gettyimages/spark
     command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
+    external_links:
+        - mysql:db
     container_name: spark-master
-    #network_mode: "bridge"
+    network_mode: "bridge"
     hostname: spark-master
     environment:
       MASTER: spark://spark-master:7077
@@ -30,7 +32,7 @@ services:
     image: gettyimages/spark
     command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
     container_name: spark-worker
-    #network_mode: "bridge"
+    network_mode: "bridge"
     hostname: spark-worker
     environment:
       SPARK_CONF_DIR: /conf

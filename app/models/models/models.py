@@ -82,5 +82,5 @@ def create_authenticator(user):
 
 
 class Recommendation(models.Model):
-    group_id = models.IntegerField()
+    group_id = models.CharField(max_length=500)
     recommended_groups = models.CharField(max_length=500)
