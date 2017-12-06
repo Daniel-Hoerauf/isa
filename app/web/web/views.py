@@ -55,6 +55,17 @@ def groupDetail(request):
         data = {}
         data['authenticator'] = request.COOKIES.get('authenticator')
         group = requests.post('http://exp-api:8000/group/{}/'.format(gid),data).json()
+        reco = group['group']
+        if reco['recommendation'] != 'None':
+            recommendations = []
+            recommendations = reco['recommendation']
+            recommendations = recommendations.split()
+            for i in range(len(recommendations)):
+                recommendations[i] = int(recommendations[i])
+            reco['recommendation'] = recommendations
+        else:
+            recommendations = []
+            reco['recommendation'] = recommendations
         return render(request, 'group.html', group)
 
 

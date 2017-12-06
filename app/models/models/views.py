@@ -191,18 +191,20 @@ def get_group(request, group):
     except Recommendation.DoesNotExist:
         rec = None
     if rec != None:
-        resp = {'status': 'ok', 'recommendation': rec.recommended_groups, 'group': {
+        resp = {'status': 'ok', 'group': {
             'id': group.pk,
             'name': group.name,
             'size': group.size,
             'description': group.description,
+            'recommendation': rec.recommended_groups,
         }}
     else:
-        resp = {'status': 'ok', 'recommendation': 'None', 'group': {
+        resp = {'status': 'ok', 'group': {
             'id': group.pk,
             'name': group.name,
             'size': group.size,
             'description': group.description,
+            'recommendation': 'None',
         }}
     return JsonResponse(resp)
 

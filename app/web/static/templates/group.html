@@ -13,4 +13,8 @@
 
 <button type="button">Join Group</button>
 
-<p>{{group.recommendation}}</p>
+<br><br><br>
+
+{% for i in group.recommendation %}
+  <td> <a href="{% url 'detail' %}?id={{ i }}">Recommended Group</a> </td><br>
+{% endfor %}
