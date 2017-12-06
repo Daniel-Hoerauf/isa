@@ -22,6 +22,17 @@ def group_index(request):
     resp = json.loads(resp_json)
     return JsonResponse(resp)
 
+
+def recommendation(request):
+    r = StrictRedis(host='redis', port=6379, db=0)
+    if r.get('all') is not None:
+        return JsonResponse(json.loads(r.get('all').decode('utf-8')))
+    req = urllib.request.Request('http://models-api:8000/recommendation/all')
+    resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+    r.set('all', resp_json)
+    resp = json.loads(resp_json)
+    return JsonResponse(resp)
+
 @csrf_exempt
 def get_group(request, group):
     # Add to kafka
