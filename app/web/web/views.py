@@ -54,9 +54,7 @@ def groupDetail(request):
             return HttpResponse("error")
         data = {}
         data['authenticator'] = request.COOKIES.get('authenticator')
-        group = requests.post('http://exp-api:8000/group/{}/'.format(gid),
-                             data).json()
-        #reco = requests.post('http://exp-api:8000/recommendation/all').json()
+        group = requests.post('http://exp-api:8000/group/{}/'.format(gid),data).json()
         return render(request, 'group.html', group)
 
 
