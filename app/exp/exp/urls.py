@@ -30,4 +30,5 @@ urlpatterns = [
     # Listings
     url(r'^creategroup/$', views.create_group, name='creategroup'),
     url(r'^search/$', views.search, name='search'),
+    url(r'^recommendation/all/$', views.recommendation, name='rec_index')
 ]

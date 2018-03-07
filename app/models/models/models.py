@@ -79,3 +79,8 @@ def create_authenticator(user):
     authenticator = Authenticator(user_id=user, authenticator=auth)
     authenticator.save()
     return authenticator.serialize()
+
+
+class Recommendation(models.Model):
+    group_id = models.CharField(max_length=500)
+    recommended_groups = models.CharField(max_length=500)

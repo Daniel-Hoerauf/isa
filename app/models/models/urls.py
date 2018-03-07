@@ -11,6 +11,8 @@ urlpatterns = [
     url(r'^signup/$', views.create_user, name='signup'),
     url(r'^validate/$', views.validate, name='validate'),
     url(r'^get_user_pk/$', views.get_user_pk, name='get_user_pk'),
+    url(r'^get_user_from_authenticator/$', views.get_user_from_authenticator,
+        name='get_user_from_authenticator'),
 
     # Location endpoints
     url(r'^location/all/$', views.location_index, name='location_index'),
@@ -52,4 +54,7 @@ urlpatterns = [
     url(r'group/(?P<group>[0-9]+)/untag/',
         views.untag_group, name='untag_group'),
     url(r'^get_group_pk/$', views.get_group, name='get_group_pk'),
+
+    # Recommendation Endpoints
+    url(r'^recommendation/all/$', views.recommendation, name='rec_index'),
 ]

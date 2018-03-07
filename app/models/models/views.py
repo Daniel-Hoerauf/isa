@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
 from django.contrib.auth.hashers import make_password, check_password
 
-from .models import Location, Student, Group, User, Authenticator
+from .models import Location, Student, Group, User, Authenticator, Recommendation
 from .models import create_authenticator, clean_authenticators
 
 def index(request):
@@ -156,6 +156,15 @@ def group_index(request):
         })
     return JsonResponse(resp)
 
+def recommendation(request):
+    resp = {'status': 'ok', 'recs': []}
+    for rec in Recommendation.objects.all():
+        resp['recs'].append({
+            'group_id': rec.group_id,
+            'recommended_groups': rec.recommended_groups,
+        })
+    return JsonResponse(resp)
+
 
 @require_POST
 def create_group(request):
@@ -177,12 +186,26 @@ def create_group(request):
 
 def get_group(request, group):
     group = get_object_or_404(Group, pk=group)
-    resp = {'status': 'ok', 'group': {
-        'id': group.pk,
-        'name': group.name,
-        'size': group.size,
-        'description': group.description,
-    }}
+    try:
+        rec = Recommendation.objects.get(group_id=group.pk)
+    except Recommendation.DoesNotExist:
+        rec = None
+    if rec != None:
+        resp = {'status': 'ok', 'group': {
+            'id': group.pk,
+            'name': group.name,
+            'size': group.size,
+            'description': group.description,
+            'recommendation': rec.recommended_groups,
+        }}
+    else:
+        resp = {'status': 'ok', 'group': {
+            'id': group.pk,
+            'name': group.name,
+            'size': group.size,
+            'description': group.description,
+            'recommendation': 'None',
+        }}
     return JsonResponse(resp)
 
 
@@ -304,3 +327,10 @@ def get_user_pk(request):
     user = get_object_or_404(User, username=username)
     return JsonResponse({'status': 'ok',
                          'user': user.pk})
+
+@require_POST
+def get_user_from_authenticator(request):
+    auth = request.POST.get('authenticator')
+    authenticator = get_object_or_404(Authenticator, pk=auth)
+    return JsonResponse({'status': 'ok',
+                         'user': authenticator.user_id.pk})

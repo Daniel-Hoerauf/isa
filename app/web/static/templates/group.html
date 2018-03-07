@@ -9,4 +9,12 @@
 
 {% csrf_token %}
 
+
+
 <button type="button">Join Group</button>
+
+<br><br><br>
+
+{% for i in group.recommendation %}
+  <td> <a href="{% url 'detail' %}?id={{ i }}">Recommended Group</a> </td><br>
+{% endfor %}
